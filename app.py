@@ -171,7 +171,7 @@ if __name__ == '__main__':
         'port': '3306',  # mysqlの接続ポート番号
         'user': 'root',  # dbアクセスするためのユーザid
         'password': '1234',  # ユーザidに対応するパスワード
-        'database': DB_name  # オープンするデータベース名
+        'database': 'covid19'  # オープンするデータベース名
     }
     DB = MyDatabase(dsn)
     app.run(debug=True)
