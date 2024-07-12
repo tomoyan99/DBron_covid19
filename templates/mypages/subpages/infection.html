@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <title>{title}</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <h2>感染記録<br></h2>
+
+        <form>
+            <label>感染しましたか？</label>
+            <label><input type="radio" name="Infection_status" value="TRUE">はい</label>
+            <label><input type="radio" name="Infection_status" value="FALSE" checked>いいえ</label><br>
+
+            <label>日時:</label>
+            <input type="datetime-local" name="Infection_date" required><br>
+
+            <input type="submit" value="送信">
+            <input type="reset" value="消去">
+        </form>
+    </body>
+</html>

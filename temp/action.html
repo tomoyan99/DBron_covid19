@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <title>{title}</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+
+        <h2>行動記録入力フォーム<br>以下の項目を入力してください</h2>
+
+        <form>
+            <label>開始時間:</label>
+            <input type="datetime-local" name="Action_starttime" required><br>
+
+            <label>終了時間:</label>
+            <input type="datetime-local" name="Action_endtime" required><br>
+
+            <label>場所:</label>
+            <input type="text" name="Move_location" required><br>
+
+            <label>移動方法:</label>
+            <input type="text" name="Move_method" required><br>
+
+            <label>出発地:</label>
+            <input type="text" name="Departure" required><br>
+
+            <label>到着地:</label>
+            <input type="text" name="Arrival" required><br>
+
+            <label>同行者:</label>
+            <label><input type="radio" name="Is_companions" value="TRUE">はい</label>
+            <label><input type="radio" name="Is_companions" value="FALSE" checked>いいえ</label><br>
+
+            <label>間柄と人数:</label>
+            <input type="text" name="Companions"><br>
+
+            <label>特記事項:</label>
+            <input type="text" name="Special_notices" maxlength="50"><br>
+
+            <input type="submit" value="送信">
+            <input type="reset" value="消去">
+        </form>
+    </body>
+</html>

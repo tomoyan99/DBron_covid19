@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <title>マイページ</title>
+        <meta charset="utf-8">
+        <script>
+            function goToURL1() {
+                window.location.href = "http://127.0.0.1:5000/health";
+            }
+            function goToURL2() {
+                window.location.href = "http://127.0.0.1:5000/action";
+            }
+            function goToURL3() {
+                window.location.href = "http://127.0.0.1:5000/kansen";
+            }
+        </script
+
+    </head>
+    <body>
+        <div>
+            <div>
+                <div >
+                    こんにちは、〇〇さん
+                </div>
+                <button>ログアウト</button>
+            </div>
+
+            <h1>マイページ</h1>
+
+            <div>
+                お知らせ！
+                <span>今日の記録を入力してください</span><br>
+                <span>(今日は入力済みです。)</span>
+            </div>
+
+            <div>
+                <button onclick="goToURL1()">体調観察表</button>
+                <button onclick="goToURL2()">行動記録表</button>
+                <button onclick="goToURL3()">感染記録</button>
+            </div>
+
+        </div>
+    </body>
+</html>

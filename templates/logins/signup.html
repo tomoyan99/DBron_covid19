@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ja">
+<head>
+	<title>Signup</title>
+	<meta charset="utf-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/libphonenumber-js/1.1.10/libphonenumber-js.min.js"></script>
+</head>
+<body>
+    <fieldset>
+        <legend>
+            <h2>アカウントの作成</h2>
+        </legend>
+        <form action="/data/signup" method="post">
+            <label>学籍番号：
+                <br>
+                <input placeholder="T111000" type="text" name="User_code" required>
+            </label>
+            <br>
+            <br>
+            <label>所属：
+                <br>
+                <select name="Faculty_office" required>
+                    <option value="" selected disabled>--選択してください--</option>
+                    <optgroup label="学生">
+                        <option value="情報応用工学科">情報応用工学科</option>
+                        <option value="機械電気工学科">機械電気工学科</option>
+                        <option value="その他">その他</option>
+                    </optgroup>
+                    <optgroup label="教職員">
+                        <option value="教授">教授</option>
+                        <option value="准教授">准教授</option>
+                        <option value="講師">助教授</option>
+                        <option value="助教授">助教授</option>
+                        <option value="助手">助手</option>
+                        <option value="教務">教務</option>
+                    </optgroup>
+                    <optgroup label="その他">
+                        <option value="その他">その他</option>
+                    </optgroup>
+                </select>
+            </label>
+            <br>
+            <br>
+            <label>名前:
+                <br>
+                <input placeholder="山田太郎" type="text" name="User_name" required>
+            </label>
+            <br>
+            <br>
+            <label>電話番号(半角数字):
+                <br>
+                <b>※ハイフンは自動で挿入されます</b>
+                <br>
+                <input type="tel" name="Phone_number" minlength="11" maxlength="14" required>
+            </label>
+            <br>
+            <br>
+            <label>管理者用パスワード：
+                <br>
+                <input type="password" name="Admin_password">
+            </label>
+            <br>
+            <br>
+            <input type="submit" value="送信">
+            <input type="reset" value="消去">
+        </form>
+    </fieldset>
+<script>
+    window.addEventListener("DOMContentLoaded",()=>{
+        const inputTel = document.querySelector("input[name=Phone_number]");//＝電話番号の入力欄
+        if (!inputTel){ return false;}
+        //電話番号の入力欄から離れたら発動
+        inputTel.addEventListener('keyup', () =>{
+            // バリデーション関数
+            let validateTelNeo = function (value) {
+                return /^[0０]/.test(value) && libphonenumber.isValidNumber(value, 'JP');
+            }
+
+            // 整形関数
+            let formatTel = function (value) {
+                return new libphonenumber.AsYouType('JP').input(value);
+            }
+
+            const postdata = inputTel.value;//入力した電話番号を取得
+            //入力した内容がバリデーションに引っかかったときはエラー
+            if (!validateTelNeo(postdata)) {
+            console.log('ERROR')
+            return
+        }
+            let formattedTel = formatTel(postdata);//入力した電話番号を整形
+            console.log(formattedTel);
+            inputTel.value = formattedTel;//整形した電話番号を入力欄に返す
+        });
+    });
+</script>
+</body>
+
+</html>

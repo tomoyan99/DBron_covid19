@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ja">
+<head>
+	<title>Signin</title>
+	<meta charset="utf-8">
+</head>
+<body>
+    <fieldset>
+        <legend><h2>アカウントでログイン</h2></legend>
+        <form action="/data/login" method="post">
+            <label>学籍ID:
+                <input type="text" name="User_code" required>
+            </label>
+            <input type="submit" value="送信">
+            <input type="reset" value="消去">
+        </form>
+    </fieldset>
+    <p>
+        <span>初めての方は<a href="/signup">コチラ</a></span>
+    </p>
+</body>
+
+</html>
