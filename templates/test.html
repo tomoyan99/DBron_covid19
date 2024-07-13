@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/change-tab.css') }}">
 	<title>Test</title>
 </head>
 <body>
@@ -10,9 +11,36 @@
 	<input type="date"/>
 	<input type="time"/>
 	<input type="datetime-local"/>
-	<p>{{count}}</p>
 	<a href="/login">サインイン</a>
 	<a href="/signup">サインアップ</a>
+    <div id="logs-table">
+        <div class="tab-wrap">
+            <input id="health-tab" type="radio" name="TAB" class="tab-switch" />
+            <label class="tab-label" for="health-tab">
+                <a href="/test/view/health">体調観察表</a>
+            </label>
+            <div class="tab-content">
+                コンテンツ1
+            </div>
+
+            <input id="behavior-tab" type="radio" name="TAB" class="tab-switch" />
+            <label class="tab-label" for="behavior-tab">
+                <a href="/test/view/behavior">行動記録表</a>
+            </label>
+            <div class="tab-content">
+                コンテンツ2
+            </div>
+
+            <input id="infection-tab" type="radio" name="TAB" class="tab-switch" />
+            <label class="tab-label" for="infection-tab">
+                <a href="/test/view/infection">感染記録表</a>
+            </label>
+            <div class="tab-content">
+                コンテンツ2
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
 

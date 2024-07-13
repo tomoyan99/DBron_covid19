@@ -29,29 +29,51 @@ def goto_error(title, desc):
     return redirect("/error")
 
 
-# 管理者権限の有無、健康管理表、行動管理表のデータをまとめた、
+# ユーザーデータ、健康管理表、行動管理表のデータをまとめた、
 # main_dataを作る関数
 def create_main_data(User_code):
     if DB.check_exist_primal(User_code):
-        user_infos = {}
-        user_infos_sql = f"""
+        user_data_sql = f"""
                             select * from basic_information 
                                 where User_code = '{User_code}';
                             """
-        health_observation_sql = f"""
+        health_data_sql = f"""
                             select * from health_observation
                                 where User_code = '{User_code}' 
                                 AND Updated >= NOW() - INTERVAL 7 DAY; 
                             """
-        behavior_record_sql = f"""
+        behavior_data_sql = f"""
                             select * from behavior_record
                                 where User_code = '{User_code}' 
                                 AND Updated >= NOW() - INTERVAL 7 DAY;
                             """
-        user_infos["user_recode"] = DB.read(user_infos_sql)
-        user_infos["health_recode"] = DB.read(health_observation_sql)
-        user_infos["behavior_record"] = DB.read(behavior_record_sql)
-        return user_infos
+        infection_data_sql = f"""
+                            select * from infection_record
+                                where User_code = '{User_code}' 
+                            """
+
+        vactine_data_sql = f"""
+                            select * from infection_record
+                                where User_code = '{User_code}' 
+                            """
+
+        user_data = DB.read(user_data_sql)
+        health_data = DB.read(health_data_sql)
+        behavior_data = DB.read(behavior_data_sql)
+        infection_data = DB.read(infection_data_sql)
+        vactine_data_sql = DB.read(vactine_data_sql)
+
+        del health_data["User_code"]
+        del health_data["HealthID"]
+
+        del behavior_data["User_code"]
+        del behavior_data["HealthID"]
+
+        del infection_data["User_code"]
+        del infection_data["HealthID"]
+
+
+        return user_data, health_data, behavior_data
     else:
         raise Exception("データベースにユーザーが見つからない")
 
@@ -67,11 +89,27 @@ def home():
     else:
         return goto_error("データベースエラー", "データベースに接続できませんでした")
 
-    if 'visit_count' in session:
-        session['visit_count'] = session.get('visit_count') + 1
-    else:
-        session['visit_count'] = 1
-    return render_template('test.html', count=session["visit_count"])
+    return redirect('/test')
+    # return redirect('/login')
+
+
+@app.route("/test")
+def test():
+    return render_template("test.html")
+
+
+@app.route("/test/view/<path:table_name>")
+def test_table(table_name):
+    checked = {
+        "health": "",
+        "behavior": "",
+        "infection": "",
+        "vactine": ""
+    }
+    checked[table_name]="checked"
+    return render_template("test.html",checked=checked)
+
+
 
 
 # ログイン画面
@@ -129,21 +167,30 @@ def mypage():
     try:
         referer = request.headers.get('Referer')
         # Refererが /login を含むかチェック
-        if referer and ("/login" in referer or "/signup" in referer):
+        if referer and ("/login" in referer or "/signup" in referer or "/mypage" in referer):
             # 必要なユーザー情報だけを抽出
-            main_data = create_main_data(session["User_code"])
-            session["main_data"] = main_data
-            return render_template("mypages/mypage.html")
+            user_data, health_data, behavior_data = create_main_data(session["User_code"])
+            session["user_data"] = user_data
+            session["health_data"] = health_data.values
+            session["behavior_data"] = behavior_data.values
+            return render_template("/mypages/mypage.html",
+                                   User_code=session["user_data"]["User_code"][0],
+                                   User_name=session["user_data"]["User_name"][0],
+                                   Admin_rights=session["user_data"]["Admin_rights"][0],
+                                   health_data=session["health_data"],
+                                   behavior_data=session["behavior_data"]
+                                   )
         else:
             abort(403)  # Forbidden
 
     except Exception as e:
+        print(e)
         return goto_error("マイページ読み込みエラー",
                           "マイページの読み込みに失敗しました。<br>セッション情報が初期化されたなどの原因が考えられます。<br>もう一度サインインからやり直してください")
 
 
 @app.route("/mypage/health")
-def health():
+def edit_health():
     return render_template("mypages/subpages/health.html")
 
 

@@ -58,9 +58,10 @@ class MyDatabase:
             result = self.cur.fetchall()
             # データの存在確認
             if len(result) == 0:
-                return None
-            else:
-                return pd.DataFrame(result)
+                field_names = [i[0] for i in self.cur.description]
+                result = [{field: '' for field in field_names}]
+
+            return pd.DataFrame(result)
 
         except mydb.Error as e:
             print("読み込みエラー", e)

@@ -3,28 +3,78 @@
 <head>
     <title>マイページ</title>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/change-tab.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mypage.css') }}">
 </head>
 <body>
 <div id="mypage">
     <div id="header">
         <h1>マイページ</h1>
         <div id="user_info">
-            こんにちは、{{ session["main_data"]["user_recode"]["User_code"][0] }} {{ session["main_data"]["user_recode"]["User_name"][0] }}さん!
+            こんにちは、{{ User_code }} {{ User_name }}さん!
         </div>
     </div>
 
-    <div id="command">
-        <button onclick="location.href = '/health'">体調観察表</button>
-        <button onclick="location.href = '/behavior'">行動記録表</button>
-        <button onclick="location.href = '/infection'">感染記録</button>
-        <button onclick="location.href = '/login'">ログアウト</button>
-    </div>
     <fieldset id="information">
         <legend><h3>お知らせ！</h3></legend>
         <p id="is_finished_health">☆☆☆今日の健康記録を入力してください☆☆☆</p>
         <p id="is_finished_behavior">☆☆☆今日の行動記録を入力してください☆☆☆</p>
     </fieldset>
+    <div id="logs-table">
+        <div class="tab-wrap">
+            <input id="health-tab" type="radio" name="TAB" class="tab-switch" checked />
+            <label class="tab-label" for="health-tab">体調観察表</label>
+            <div class="tab-content">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>記録日</th>
+                        <th>体温</th>
+                        <th>筋肉痛</th>
+                        <th>だるさ</th>
+                        <th>頭痛</th>
+                        <th>喉痛</th>
+                        <th>息切れ</th>
+                        <th>咳・くしゃみ</th>
+                        <th>吐き気</th>
+                        <th>腹痛</th>
+                        <th>味覚異常</th>
+                        <th>嗅覚異常</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in health_data %}
+                            <tr>
+                                {% for cell in row %}
+                                    <td>{{ cell }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <input id="behavior-tab" type="radio" name="TAB" class="tab-switch" />
+            <label class="tab-label" for="behavior-tab">行動記録表</label>
+            <div class="tab-content">
+                <table>
+                    <thead></thead>
+                </table>
+            </div>
+
+            <input id="infection-tab" type="radio" name="TAB" class="tab-switch" />
+            <label class="tab-label" for="infection-tab">感染記録表</label>
+            <div class="tab-content">
+                <table>
+
+                </table>
+            </div>
+        </div>
+    </div>
 
 </div>
+<script>
+
+</script>
 </body>
 </html>
