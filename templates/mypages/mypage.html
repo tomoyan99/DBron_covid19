@@ -11,15 +11,16 @@
     <div id="header">
         <h1>マイページ</h1>
         <div id="user_info">
-            こんにちは、{{ User_code }} {{ User_name }}さん!
+            こんにちは、<b>{{ User_code }}  {{ User_name }}</b>さん!
         </div>
     </div>
 
     <fieldset id="information">
         <legend><h3>お知らせ！</h3></legend>
-        <p id="is_finished_health">☆☆☆今日の健康記録を入力してください☆☆☆</p>
-        <p id="is_finished_behavior">☆☆☆今日の行動記録を入力してください☆☆☆</p>
+        <p id="is_finished_health">☆☆☆今日の健康記録を入力してください☆☆☆  >> <a href="#">入力する</a></p>
+        <p id="is_finished_behavior">☆☆☆今日の行動記録を入力してください☆☆☆  >> <a href="#">入力する</a></p>
     </fieldset>
+    <br>
     <div id="logs-table">
         <div class="tab-wrap">
             <input id="health-tab" type="radio" name="TAB" class="tab-switch" checked />
@@ -28,7 +29,6 @@
                 <table>
                     <thead>
                     <tr>
-                        <th>記録日</th>
                         <th>体温</th>
                         <th>筋肉痛</th>
                         <th>だるさ</th>
@@ -40,6 +40,7 @@
                         <th>腹痛</th>
                         <th>味覚異常</th>
                         <th>嗅覚異常</th>
+                        <th>記録日</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -58,7 +59,28 @@
             <label class="tab-label" for="behavior-tab">行動記録表</label>
             <div class="tab-content">
                 <table>
-                    <thead></thead>
+                    <thead>
+                        <tr>
+                            <th>開始時間</th>
+                            <th>終了時間</th>
+                            <th>場所</th>
+                            <th>移動方法</th>
+                            <th>出発地</th>
+                            <th>到着地</th>
+                            <th>同行者数</th>
+                            <th>特記事項</th>
+                            <th>記録日</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in behavior_data %}
+                        <tr>
+                            {% for cell in row %}
+                            <td>{{ cell }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
             </div>
 
@@ -66,9 +88,49 @@
             <label class="tab-label" for="infection-tab">感染記録表</label>
             <div class="tab-content">
                 <table>
-
+                    <thead>
+                        <tr>
+                            <th>出校停止開始日</th>
+                            <th>出校停止終了日</th>
+                            <th>出校停止状況</th>
+                            <th>医療機関名</th>
+                            <th>医者名</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in infection_data %}
+                        <tr>
+                            {% for cell in row %}
+                            <td>{{ cell }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
                 </table>
             </div>
+
+            <input id="vaccine-tab" type="radio" name="TAB" class="tab-switch" />
+            <label class="tab-label" for="vaccine-tab">ワクチン接種記録表</label>
+            <div class="tab-content">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>接種日時</th>
+                        <th>接種ワクチン名</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in vaccine_data %}
+                    <tr>
+                        {% for cell in row %}
+                        <td>{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     </div>
 

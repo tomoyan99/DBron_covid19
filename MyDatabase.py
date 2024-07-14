@@ -4,19 +4,6 @@ import pandas as pd
 import re
 
 
-def parse_mysql_error(error_message):
-    pattern = r"(\d+)\s\((\w+)\)"
-    match = re.match(pattern, error_message)
-
-    if match:
-        # 一致した部分のコード部分を取り出す
-        error_code = int(match.group(1))
-        return error_code
-    else:
-        # 一致しなかった場合はNoneを返す
-        return None
-
-
 class MyDatabase:
     def __init__(self, dsn):
         self.dsn = dsn

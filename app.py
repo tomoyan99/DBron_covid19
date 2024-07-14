@@ -1,8 +1,10 @@
-from flask import Flask, render_template, session, request, redirect, abort
-from flask_session import Session
-import secrets
-from MyDatabase import MyDatabase
 import json
+import secrets
+
+from flask import Flask, render_template, session, request, redirect, abort
+
+from MyDatabase import MyDatabase
+from flask_session import Session
 
 # ランダムなSECRET_KEYを生成
 secret_key = secrets.token_hex(32)
@@ -48,12 +50,12 @@ def create_main_data(User_code):
                                 AND Updated >= NOW() - INTERVAL 7 DAY;
                             """
         infection_data_sql = f"""
-                            select * from infection_record
+                            select * from infection_status
                                 where User_code = '{User_code}' 
                             """
 
-        vactine_data_sql = f"""
-                            select * from infection_record
+        vaccine_data_sql = f"""
+                            select * from vaccine
                                 where User_code = '{User_code}' 
                             """
 
@@ -61,19 +63,21 @@ def create_main_data(User_code):
         health_data = DB.read(health_data_sql)
         behavior_data = DB.read(behavior_data_sql)
         infection_data = DB.read(infection_data_sql)
-        vactine_data_sql = DB.read(vactine_data_sql)
+        vaccine_data = DB.read(vaccine_data_sql)
 
         del health_data["User_code"]
         del health_data["HealthID"]
 
         del behavior_data["User_code"]
-        del behavior_data["HealthID"]
+        del behavior_data["BehaviorID"]
+        del behavior_data["Is_companions"]
 
         del infection_data["User_code"]
-        del infection_data["HealthID"]
 
+        del vaccine_data["User_code"]
+        del vaccine_data["vaccineID"]
 
-        return user_data, health_data, behavior_data
+        return user_data, health_data, behavior_data,infection_data,vaccine_data
     else:
         raise Exception("データベースにユーザーが見つからない")
 
@@ -96,20 +100,6 @@ def home():
 @app.route("/test")
 def test():
     return render_template("test.html")
-
-
-@app.route("/test/view/<path:table_name>")
-def test_table(table_name):
-    checked = {
-        "health": "",
-        "behavior": "",
-        "infection": "",
-        "vactine": ""
-    }
-    checked[table_name]="checked"
-    return render_template("test.html",checked=checked)
-
-
 
 
 # ログイン画面
@@ -168,17 +158,26 @@ def mypage():
         referer = request.headers.get('Referer')
         # Refererが /login を含むかチェック
         if referer and ("/login" in referer or "/signup" in referer or "/mypage" in referer):
-            # 必要なユーザー情報だけを抽出
-            user_data, health_data, behavior_data = create_main_data(session["User_code"])
+            # ユーザごとの情報をだけを抽出
+            (user_data,
+             health_data,
+             behavior_data,
+             infection_data,
+             vaccine_data
+             ) = create_main_data(session["User_code"])
             session["user_data"] = user_data
             session["health_data"] = health_data.values
             session["behavior_data"] = behavior_data.values
+            session["infection_data"] = infection_data.values
+            session["vaccine_data"] = vaccine_data.values
             return render_template("/mypages/mypage.html",
                                    User_code=session["user_data"]["User_code"][0],
                                    User_name=session["user_data"]["User_name"][0],
                                    Admin_rights=session["user_data"]["Admin_rights"][0],
                                    health_data=session["health_data"],
-                                   behavior_data=session["behavior_data"]
+                                   behavior_data=session["behavior_data"],
+                                   infection_data=session["infection_data"],
+                                   vaccine_data=session["vaccine_data"]
                                    )
         else:
             abort(403)  # Forbidden
@@ -187,16 +186,6 @@ def mypage():
         print(e)
         return goto_error("マイページ読み込みエラー",
                           "マイページの読み込みに失敗しました。<br>セッション情報が初期化されたなどの原因が考えられます。<br>もう一度サインインからやり直してください")
-
-
-@app.route("/mypage/health")
-def edit_health():
-    return render_template("mypages/subpages/health.html")
-
-
-@app.route("/mypage/begavior")
-def action():
-    return render_template("mypages/subpages/behavior.html")
 
 
 # エラーページ画面

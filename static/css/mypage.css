@@ -1,12 +1,73 @@
 #logs-table{
     width: 100%;
-    height: 400px;
+
+    .tab-label:hover{
+        background-color: cornflowerblue;
+    }
+    .tab-content{
+        width: 100%;
+        margin-top: 5px;
+        height: 315px;
+    }
     & table{
+        display: block;
+        overflow-y: scroll;
+        /*overflow-x: scroll;*/
         border-collapse: collapse;
         width: 100%;
         height: 100%;
+        border-spacing: 0;
+
+        & th{
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background: lightblue;
+            border-top:#FFFFFF;
+            text-wrap: nowrap;
+        }
+        & th:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+            background: lightblue;
+            z-index: -1;
+        }
+        & td,th{
+            width: 1000px;
+            text-wrap: nowrap;
+        }
+
     }
-    & table,th,tr,td{
+    & table,th,td{
         border: 1px solid black;
+    }
+}
+
+#information{
+    & legend{
+        & h3{
+            margin-bottom: 0;
+            margin-top: 15px;
+        }
+    }
+}
+
+#header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    & h1{
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    & #user_info{
+        text-align: right;
+        margin-right: 30px;
     }
 }
