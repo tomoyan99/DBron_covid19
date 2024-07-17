@@ -17,13 +17,13 @@
     <fieldset id="information">
         <legend><h3>お知らせ！</h3></legend>
         <p id="is_finished_health">☆☆☆今日の健康記録を入力してください☆☆☆  >> <a href="mypage/edit/health">入力する</a></p>
-        <p id="is_finished_behavior">☆☆☆今日の行動記録を入力してください☆☆☆  >> <a href="mypage/edit/behavior">入力する</a></p>
+        <p id="is_finished_activity">☆☆☆今日の行動記録を入力してください☆☆☆  >> <a href="mypage/edit/activity">入力する</a></p>
     </fieldset>
     <div id="slect_bottan">
         <button class="menuButton" data-menu="menu1">記入</button>
         <div id="menu1" class="menu">
             <a href="mypage/edit/health">健康記録表</a>
-            <a href="mypage/edit/behavior">行動記録表</a>
+            <a href="mypage/edit/activity">行動記録表</a>
             <a href="mypage/edit/infection">感染記録表</a>
             <a href="mypage/edit/vaccine">ワクチン接種記録表</a>
         </div>
@@ -69,8 +69,8 @@
                     </tbody>
                 </table>
             </div>
-            <input id="behavior-tab" type="radio" name="TAB" class="tab-switch" />
-            <label class="tab-label" for="behavior-tab">行動記録表</label>
+            <input id="activity-tab" type="radio" name="TAB" class="tab-switch" />
+            <label class="tab-label" for="activity-tab">行動記録表</label>
             <div class="tab-blank"></div>
             <div class="tab-content">
                 <table>
@@ -88,7 +88,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for row in behavior_data %}
+                        {% for row in activity_data %}
                         <tr>
                             {% for cell in row %}
                             <td>{{ cell }}</td>

@@ -37,21 +37,21 @@ def goto_error(title, desc):
 def create_main_data(User_code):
     if DB.check_exist_primal(User_code):
         user_data_sql = f"""
-                            select * from basic_information 
+                            select * from users 
                                 where User_code = '{User_code}';
                             """
         health_data_sql = f"""
-                            select * from health_observation
+                            select * from health
                                 where User_code = '{User_code}' 
                                 AND Updated >= NOW() - INTERVAL 7 DAY; 
                             """
-        behavior_data_sql = f"""
-                            select * from behavior_record
+        activity_data_sql = f"""
+                            select * from activity
                                 where User_code = '{User_code}' 
                                 AND Updated >= NOW() - INTERVAL 7 DAY;
                             """
         infection_data_sql = f"""
-                            select * from infection_status
+                            select * from infection
                                 where User_code = '{User_code}' 
                             """
 
@@ -62,23 +62,23 @@ def create_main_data(User_code):
 
         user_data = DB.read(user_data_sql)
         health_data = DB.read(health_data_sql)
-        behavior_data = DB.read(behavior_data_sql)
+        activity_data = DB.read(activity_data_sql)
         infection_data = DB.read(infection_data_sql)
         vaccine_data = DB.read(vaccine_data_sql)
 
         del health_data["User_code"]
         del health_data["HealthID"]
 
-        del behavior_data["User_code"]
-        del behavior_data["BehaviorID"]
-        del behavior_data["Is_companions"]
+        del activity_data["User_code"]
+        del activity_data["activityID"]
+        del activity_data["Is_companions"]
 
         del infection_data["User_code"]
 
         del vaccine_data["User_code"]
         del vaccine_data["vaccineID"]
 
-        return user_data, health_data, behavior_data, infection_data, vaccine_data
+        return user_data, health_data, activity_data, infection_data, vaccine_data
     else:
         raise Exception("データベースにユーザーが見つからない")
 
@@ -151,13 +151,13 @@ def fetch_data(User_code):
     # ユーザごとの情報をだけを抽出
     (user_data,
      health_data,
-     behavior_data,
+     activity_data,
      infection_data,
      vaccine_data
      ) = create_main_data(User_code)
     session["user_data"] = user_data
     session["health_data"] = health_data.values
-    session["behavior_data"] = behavior_data.values
+    session["activity_data"] = activity_data.values
     session["infection_data"] = infection_data.values
     session["vaccine_data"] = vaccine_data.values
     return redirect("/mypage")
@@ -175,7 +175,7 @@ def mypage():
                                    User_name=session["user_data"]["User_name"][0],
                                    Admin_rights=session["user_data"]["Admin_rights"][0],
                                    health_data=session["health_data"],
-                                   behavior_data=session["behavior_data"],
+                                   activity_data=session["activity_data"],
                                    infection_data=session["infection_data"],
                                    vaccine_data=session["vaccine_data"]
                                    )
@@ -201,13 +201,13 @@ def edit_health():
 
 
 # 活動記録画面
-@app.route("/mypage/edit/behavior")
-def edit_behavior():
+@app.route("/mypage/edit/activity")
+def edit_activity():
     if not request.form:
-        return render_template("mypages/subpages/behavior.html", result=comp_result(False))
+        return render_template("mypages/subpages/activity.html", result=comp_result(False))
     else:
         print(json.dumps(request.form,indent=2))
-        return render_template("mypages/subpages/behavior.html", result=comp_result(True))
+        return render_template("mypages/subpages/activity.html", result=comp_result(True))
 
 
 # 観戦記録画面
