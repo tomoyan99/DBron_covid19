@@ -12,6 +12,7 @@
     display: grid;
     justify-content: space-between;
     align-items: center;
+    z-index: 1000;
     /*opacity: 0.8;*/
     #popup-container{
         animation: forwards fade-in 0.4s;
@@ -26,6 +27,7 @@
         background-color: #fff;
         border-radius: 5px;
         border: 5px solid #43ff91;
+        z-index: 1001;
         p {
             font-size: 1.2em;
             color: #000;
