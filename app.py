@@ -104,11 +104,11 @@ def test():
 
 
 # ログイン画面
-@app.route("/login",methods=["get,post"])
+@app.route("/login",methods=["get","post"])
 def login():
     session.clear()
     if not request.form:
-        return render_template("logins/signin.html")
+        return render_template("logins/login.html")
     else:
         User_code = request.form.get("User_code", default=None, type=str)
         if User_code:
@@ -121,7 +121,7 @@ def login():
         return redirect(f"/fetch:{User_code}")
 
 # サインアップ画面
-@app.route("/signup",methods=["get,post"])
+@app.route("/signup",methods=["get","post"])
 def signup():
     session.clear()
     if not request.form:
@@ -169,7 +169,7 @@ def mypage():
     try:
         referer = request.headers.get('Referer')
         # Refererが /login を含むかチェック
-        if referer and ("/fetch" in referer or "/mypage" in referer):
+        if referer and ("/login" in referer or "/signup" in referer or "/mypage" in referer):
             return render_template("/mypages/mypage.html",
                                    User_code=session["user_data"]["User_code"][0],
                                    User_name=session["user_data"]["User_name"][0],
