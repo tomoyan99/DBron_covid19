@@ -194,6 +194,9 @@ def edit_health():
         return render_template("mypages/subpages/health.html", result=comp_result(False))
     else:
         print(json.dumps(request.form,indent=2))
+        data = request.form.to_dict()
+        data["User_code"] = session["user_data"]["User_code"]
+        DB.write("")
         return render_template("mypages/subpages/health.html", result=comp_result(True))
 
 
