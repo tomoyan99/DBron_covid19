@@ -1,0 +1,5 @@
+@import url("mypage.css");
+:root{
+    --theme-color: #1576a2;
+    --theme-hover: #114c67;
+}

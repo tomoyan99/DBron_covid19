@@ -1,5 +1,6 @@
 import json
 import secrets
+import time
 
 import numpy as np
 import pandas as pd
@@ -7,6 +8,7 @@ from flask import Flask, render_template, session, request, redirect, abort
 
 from modules.MyDatabase import MyDatabase
 from flask_session import Session
+from modules.components.logout import comp_logout
 from modules.components.result import comp_result
 from datetime import datetime
 import math
@@ -40,13 +42,12 @@ def goto_error(title, desc):
 def replace_df_values(df, true_word='true_word', false_word='false_word', nan_word='nan_word'):
     # "0"をfalse_wordに置換
     df.replace(0, false_word, inplace=True)
-
     # "1"をtrue_wordに置換
     df.replace(1, true_word, inplace=True)
-
     # NaNをnan_wordに置換
     df.replace("nan", nan_word, inplace=True)
-
+    # 空白をnan_wordに置換
+    df.replace("", nan_word, inplace=True)
     return df
 
 
@@ -116,7 +117,7 @@ def create_main_data(User_code):
 
 
 # request.formから現在時刻、User_codeを追加したdictを返す
-def form_to_data(form):
+def form_to_data(form,is_updated=True):
     form_dict = form.to_dict()
     # 現在時刻を取得
     now = datetime.now()
@@ -124,7 +125,8 @@ def form_to_data(form):
     updated = now.strftime('%Y-%m-%d %H:%M:%S')
 
     form_dict["User_code"] = session["user_data"]["User_code"][0]
-    form_dict["Updated"] = updated
+    if is_updated:
+        form_dict["Updated"] = updated
 
     return form_dict
 
@@ -216,16 +218,40 @@ def mypage(User_code):
     try:
         referer = request.headers.get('Referer')
         # Refererが /login を含むかチェック
-        if referer and ("/login" in referer or "/signup" in referer or "/mypage" in referer):
-            return render_template("/mypages/mypage.html",
-                                   User_code=User_code,
-                                   User_name=session["user_data"]["User_name"][0],
-                                   Admin_rights=session["user_data"]["Admin_rights"][0],
-                                   health_data=session["health_data"],
-                                   activity_data=session["activity_data"],
-                                   infection_data=session["infection_data"],
-                                   vaccine_data=session["vaccine_data"]
-                                   )
+        if referer and ("/login" in referer or
+                        "/signup" in referer or
+                        f"/mypage:{User_code}" in referer
+        ):
+
+            is_completed_health = (not type(session["health_data"][0][-1]) == str
+                                   and session["health_data"][0][-1].date() == datetime.now().date())
+            is_completed_activity = (not type(session["activity_data"][0][-1]) == str
+                                     and session["activity_data"][0][-1].date() == datetime.now().date())
+            is_admin = True if session["user_data"]["Admin_rights"][0] == 1 else False
+            if is_admin:
+                return render_template("/mypages/admin_mypage.html",
+                                       User_code=User_code,
+                                       User_name=session["user_data"]["User_name"][0],
+                                       Admin_rights=session["user_data"]["Admin_rights"][0],
+                                       health_data=session["health_data"],
+                                       activity_data=session["activity_data"],
+                                       infection_data=session["infection_data"],
+                                       vaccine_data=session["vaccine_data"],
+                                       is_completed_health=is_completed_health,
+                                       is_completed_activity=is_completed_activity
+                                       )
+            else:
+                return render_template("/mypages/mypage.html",
+                                       User_code=User_code,
+                                       User_name=session["user_data"]["User_name"][0],
+                                       Admin_rights=session["user_data"]["Admin_rights"][0],
+                                       health_data=session["health_data"],
+                                       activity_data=session["activity_data"],
+                                       infection_data=session["infection_data"],
+                                       vaccine_data=session["vaccine_data"],
+                                       is_completed_health=is_completed_health,
+                                       is_completed_activity=is_completed_activity
+                                       )
         else:
             abort(403)  # Forbidden
     except Exception as e:
@@ -234,44 +260,82 @@ def mypage(User_code):
                           "マイページの読み込みに失敗しました。<br>セッション情報が初期化されたなどの原因が考えられます。<br>もう一度サインインからやり直してください")
 
 
+# logout画面
+@app.route("/mypage:<User_code>/logout")
+def logout(User_code):
+    is_completed_health = (not type(session["health_data"][0][-1]) == str
+                           and session["health_data"][0][-1].date() == datetime.now().date())
+    is_completed_activity = (not type(session["activity_data"][0][-1]) == str
+                             and session["activity_data"][0][-1].date() == datetime.now().date())
+    is_admin = True if session["user_data"]["Admin_rights"][0] == 1 else False
+    if is_admin:
+        return render_template("/mypages/admin_mypage.html",
+                               User_code=User_code,
+                               User_name=session["user_data"]["User_name"][0],
+                               Admin_rights=session["user_data"]["Admin_rights"][0],
+                               health_data=session["health_data"],
+                               activity_data=session["activity_data"],
+                               infection_data=session["infection_data"],
+                               vaccine_data=session["vaccine_data"],
+                               is_completed_health=is_completed_health,
+                               is_completed_activity=is_completed_activity,
+                               logout=comp_logout(True,User_code)
+                               )
+    else:
+        return render_template("/mypages/mypage.html",
+                               User_code=User_code,
+                               User_name=session["user_data"]["User_name"][0],
+                               Admin_rights=session["user_data"]["Admin_rights"][0],
+                               health_data=session["health_data"],
+                               activity_data=session["activity_data"],
+                               infection_data=session["infection_data"],
+                               vaccine_data=session["vaccine_data"],
+                               is_completed_health=is_completed_health,
+                               is_completed_activity=is_completed_activity,
+                               logout=comp_logout(True,User_code)
+                               )
+
 # 健康記録画面
 @app.route("/mypage:<User_code>/edit/health", methods=["GET", "POST"])
 def edit_health(User_code):
     if not request.form:
-        return render_template("mypages/subpages/health.html", result=comp_result(False,User_code))
+        return render_template("mypages/subpages/health.html", result=comp_result(False, User_code))
     else:
         data = form_to_data(request.form)
         DB.write("health", data)
-        return render_template("mypages/subpages/health.html", result=comp_result(True,User_code))
+        return render_template("mypages/subpages/health.html", result=comp_result(True, User_code))
 
 
 # 活動記録画面
-@app.route("/mypage:<User_code>/edit/activity")
+@app.route("/mypage:<User_code>/edit/activity", methods=["GET", "POST"])
 def edit_activity(User_code):
     if not request.form:
         return render_template("mypages/subpages/activity.html", result=comp_result(False, User_code))
     else:
-        print(json.dumps(request.form, indent=2))
+        data = form_to_data(request.form)
+        DB.write("activity", data)
         return render_template("mypages/subpages/activity.html", result=comp_result(True, User_code))
 
 
 # 観戦記録画面
-@app.route("/mypage:<User_code>/edit/infection")
+@app.route("/mypage:<User_code>/edit/infection", methods=["GET", "POST"])
 def edit_infection(User_code):
     if not request.form:
         return render_template("mypages/subpages/infection.html", result=comp_result(False, User_code))
     else:
-        print(json.dumps(request.form, indent=2))
+        data = form_to_data(request.form,False)
+        DB.write("infection", data)
     return render_template("mypages/subpages/infection.html", result=comp_result(True, User_code))
 
 
 # ワクチン接種記録画面
-@app.route("/mypage:<User_code>/edit/vaccine")
+@app.route("/mypage:<User_code>/edit/vaccine", methods=["GET", "POST"])
 def edit_vaccine(User_code):
     if not request.form:
         return render_template("mypages/subpages/vaccine.html", result=comp_result(False, User_code))
     else:
-        print(json.dumps(request.form, indent=2))
+        data = form_to_data(request.form,False)
+        DB.write("vaccine", data)
     return render_template("mypages/subpages/vaccine.html", result=comp_result(True, User_code))
 
 

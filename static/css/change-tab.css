@@ -1,10 +1,11 @@
+
 .tab-wrap {
     display: flex;
     flex-wrap: wrap;
 }
 .tab-label {
     color: White;
-    background: LightGray;
+    background: var(--bg-glay);
     margin-right: 5px;
     padding: 3px 12px;
     order: -1;
@@ -18,7 +19,7 @@
     height: 15px;
     border-right:1px solid #ddd;
     border-left:1px solid #ddd;
-    background-color: #fff;
+    background-color: var(--bg-glay);
     display: none;
 }
 /* アクティブなタブ */

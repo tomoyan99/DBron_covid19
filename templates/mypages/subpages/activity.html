@@ -25,7 +25,7 @@
             </tr>
             <tr>
                 <td><label>場所:</label></td>
-                <td><input type="text" name="Move_location" required></td>
+                <td><input type="text" name="Action_location" required></td>
             </tr>
             <tr>
                 <td><label>移動方法:</label></td>
@@ -39,30 +39,46 @@
                 <td><label>到着地:</label></td>
                 <td><input type="text" name="Arrival" required></td>
             </tr>
-            <tr>
+            <tr id="is_companion">
                 <td><label>同行者:</label></td>
                 <td>
                     <label>
-                        <input type="radio" name="Is_companions" value="1">はい
+                        <input type="radio" name="Is_companions" value="1" required>はい
                     </label>
                     <label>
-                        <input type="radio" name="Is_companions" value="0" checked>いいえ
+                        <input type="radio" name="Is_companions" value="0" checked required>いいえ
                     </label>
                 </td>
             </tr>
-            <tr>
+            <tr id="num_companion" style="display: none;">
                 <td><label>間柄と人数:</label></td>
-                <td><input type="text" name="Companions"></td>
+                <td><input type="text" name="Companions" required></td>
             </tr>
             <tr>
                 <td><label>特記事項:</label></td>
                 <td><input type="text" name="Special_notices" maxlength="50"></td>
             </tr>
         </table>
-            <button type="submit">送信</button>
             <button type="reset">消去</button>
+            <button type="submit">送信</button>
         </form>
     </div>
-
+    <script>
+        window.addEventListener("DOMContentLoaded",()=>{
+            const is_companions = document.querySelectorAll("input[name=Is_companions]")
+            const num_companions = document.querySelector("#num_companion");
+            is_companions.forEach((elem)=>{
+                elem.addEventListener("change",(e)=>{
+                    if (e.target.value === "1"){
+                        num_companions.style.display = "";
+                        num_companions.classList.toggle("fade-in");
+                    }else if(e.target.value === "0"){
+                        num_companions.style.display = "none";
+                        num_companions.classList.toggle("fade-in");
+                    }
+                })
+            })
+        })
+    </script>
 </body>
 </html>

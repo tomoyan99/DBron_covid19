@@ -4,35 +4,56 @@
     <title>マイページ</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/change-tab.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/mypage.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mypage-admin.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/logout.css') }}">
 </head>
 <body>
-<div id="admin-page" class="container">
+{% if logout %}
+    {{ logout |safe}}
+{% endif %}
+<div id="user-page" class="container">
     <div id="header">
-        <h1>マイページ</h1>
-        <div id="user_info">
-            こんにちは、<b>{{ User_code }}  {{ User_name }}</b>さん!
+        <div id="titles">
+            <h1>マイページ</h1>
+            <div id="user_info">
+                こんにちは、<b>{{ User_code }}  {{ User_name }}</b>さん!
+            </div>
         </div>
+        <img src="{{ url_for("static",filename="images/kanrisya.png") }}" alt="">
     </div>
-    <fieldset id="information">
-        <legend><h3>お知らせ！</h3></legend>
-        <p id="is_finished_health">☆☆☆今日の健康記録を入力してください☆☆☆  >> <a href="mypage/edit/health">入力する</a></p>
-        <p id="is_finished_activity">☆☆☆今日の行動記録を入力してください☆☆☆  >> <a href="mypage/edit/activity">入力する</a></p>
-    </fieldset>
-    <div id="slect_bottan">
-        <button class="menuButton" data-menu="menu1">記入</button>
-        <div id="menu1" class="menu">
-            <a href="mypage/edit/health">健康記録表</a>
-            <a href="mypage/edit/activity">行動記録表</a>
-            <a href="mypage/edit/infection">感染記録表</a>
-            <a href="mypage/edit/vaccine">ワクチン接種記録表</a>
-        </div>
+    <div id="body">
+        <fieldset id="information">
+            <legend><h3>お知らせ！</h3></legend>
+            {% if not is_completed_health %}
+                <p id="is_completed_health">☆☆☆今日の健康記録を入力してください☆☆☆  >> <a href="mypage:{{ User_code }}/edit/health">入力する</a></p>
+            {% endif %}
 
-        <button class="menuButton" data-menu="menu2">編集</button>
-        <div id="menu2" class="menu">
-            <a href="mypage/edit/update">テーブル追加</a>
-            <a href="mypage/edit/delete">テーブル削除</a>
+            {% if not is_completed_activity %}
+                <p id="is_completed_activity">☆☆☆今日の行動記録を入力してください☆☆☆  >> <a href="mypage:{{ User_code }}/edit/activity">入力する</a></p>
+            {% endif %}
 
+            {% if ( is_completed_health and is_completed_activity) %}
+                <p>☆☆☆お知らせはありません☆☆☆</p>
+            {% endif %}
+        </fieldset>
+        <div id="select_button">
+            <button class="menuButton" data-menu="menu1">記入</button>
+            <div id="menu1" class="menu">
+                {% if not is_completed_health %}
+                    <a href="/mypage:{{ User_code }}/edit/health">健康記録表</a>
+                {% endif %}
+                <a href="/mypage:{{ User_code }}/edit/activity">行動記録表</a>
+                <a href="/mypage:{{ User_code }}/edit/infection">感染記録表</a>
+                <a href="/mypage:{{ User_code }}/edit/vaccine">ワクチン接種記録表</a>
+            </div>
+            <button class="menuButton" data-menu="menu2">編集</button>
+            <div id="menu2" class="menu">
+                <a href="/mypage:{{ User_code }}/edit/update">テーブル追加</a>
+                <a href="/mypage:{{ User_code }}/edit/delete">テーブル削除</a>
+            </div>
+            <button class="logoutButton" onclick="location.href = '/mypage:{{ User_code }}/logout'">
+                ログアウト
+            </button>
         </div>
     </div>
     <div id="logs-table">
@@ -59,13 +80,19 @@
                     </tr>
                     </thead>
                     <tbody>
-                        {% for row in health_data %}
-                            <tr>
-                                {% for cell in row %}
-                                    <td>{{ cell }}</td>
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
+                    {% for row in health_data %}
+                        <tr>
+                            {% for cell in row %}
+                                <td>
+                                    {% if cell == "あり" %}
+                                        <span style="color: red;"><b>{{ cell }}</b></span>
+                                    {% else %}
+                                        {{ cell }}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -75,26 +102,26 @@
             <div class="tab-content">
                 <table>
                     <thead>
-                        <tr>
-                            <th>開始時間</th>
-                            <th>終了時間</th>
-                            <th>場所</th>
-                            <th>移動方法</th>
-                            <th>出発地</th>
-                            <th>到着地</th>
-                            <th>同行者数</th>
-                            <th>特記事項</th>
-                            <th>記録日</th>
-                        </tr>
+                    <tr>
+                        <th>開始時間</th>
+                        <th>終了時間</th>
+                        <th>場所</th>
+                        <th>移動方法</th>
+                        <th>出発地</th>
+                        <th>到着地</th>
+                        <th>同行者数</th>
+                        <th>特記事項</th>
+                        <th>記録日</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {% for row in activity_data %}
+                    {% for row in activity_data %}
                         <tr>
                             {% for cell in row %}
-                            <td>{{ cell }}</td>
+                                <td>{{ cell }}</td>
                             {% endfor %}
                         </tr>
-                        {% endfor %}
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -104,22 +131,22 @@
             <div class="tab-content">
                 <table>
                     <thead>
-                        <tr>
-                            <th>出校停止開始日</th>
-                            <th>出校停止終了日</th>
-                            <th>出校停止状況</th>
-                            <th>医療機関名</th>
-                            <th>医者名</th>
-                        </tr>
+                    <tr>
+                        <th>出校停止開始日</th>
+                        <th>出校停止終了日</th>
+                        <th>出校停止状況</th>
+                        <th>医療機関名</th>
+                        <th>医者名</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {% for row in infection_data %}
+                    {% for row in infection_data %}
                         <tr>
                             {% for cell in row %}
-                            <td>{{ cell }}</td>
+                                <td>{{ cell }}</td>
                             {% endfor %}
                         </tr>
-                        {% endfor %}
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -136,11 +163,11 @@
                     </thead>
                     <tbody>
                     {% for row in vaccine_data %}
-                    <tr>
-                        {% for cell in row %}
-                        <td>{{ cell }}</td>
-                        {% endfor %}
-                    </tr>
+                        <tr>
+                            {% for cell in row %}
+                                <td>{{ cell }}</td>
+                            {% endfor %}
+                        </tr>
                     {% endfor %}
                     </tbody>
                 </table>
@@ -148,29 +175,29 @@
         </div>
     </div>
 </div>
-    <script>
-        document.querySelectorAll('.menuButton').forEach(button => {
-            button.addEventListener('click', function(event) {
-                event.stopPropagation();
-                var menuId = this.getAttribute('data-menu');
-                var menu = document.getElementById(menuId);
-                if (menu.style.display === 'block') {
-                    menu.style.display = 'none';
-                } else {
-                    document.querySelectorAll('.menu').forEach(m => m.style.display = 'none');
-                    menu.style.display = 'block';
-                }
-            });
+<script>
+    document.querySelectorAll('.menuButton').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.stopPropagation();
+            var menuId = this.getAttribute('data-menu');
+            var menu = document.getElementById(menuId);
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+            } else {
+                document.querySelectorAll('.menu').forEach(m => m.style.display = 'none');
+                menu.style.display = 'block';
+            }
         });
+    });
 
-        document.addEventListener('click', function(event) {
-            document.querySelectorAll('.menu').forEach(menu => {
-                if (!menu.contains(event.target) && !event.target.matches('.menuButton')) {
-                    menu.style.display = 'none';
-                }
-            });
+    document.addEventListener('click', function(event) {
+        document.querySelectorAll('.menu').forEach(menu => {
+            if (!menu.contains(event.target) && !event.target.matches('.menuButton')) {
+                menu.style.display = 'none';
+            }
         });
-    </script>
+    });
+</script>
 </div>
 </body>
 </html>

@@ -5,30 +5,49 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/change-tab.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mypage.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/logout.css') }}">
 </head>
 <body>
+{% if logout %}
+    {{ logout |safe}}
+{% endif %}
 <div id="user-page" class="container">
     <div id="header">
-        <h1>マイページ</h1>
-        <div id="user_info">
-            こんにちは、<b>{{ User_code }}  {{ User_name }}</b>さん!
+        <div id="titles">
+            <h1>マイページ</h1>
+            <div id="user_info">
+                こんにちは、<b>{{ User_code }}  {{ User_name }}</b>さん!
+            </div>
         </div>
     </div>
     <div id="body">
         <fieldset id="information">
             <legend><h3>お知らせ！</h3></legend>
-            <p id="is_finished_health">☆☆☆今日の健康記録を入力してください☆☆☆  >> <a href="mypage:{{ User_code }}/edit/health">入力する</a></p>
-            <p id="is_finished_activity">☆☆☆今日の行動記録を入力してください☆☆☆  >> <a href="mypage:{{ User_code }}/edit/activity">入力する</a></p>
+            {% if not is_completed_health %}
+            <p id="is_completed_health">☆☆☆今日の健康記録を入力してください☆☆☆  >> <a href="mypage:{{ User_code }}/edit/health">入力する</a></p>
+            {% endif %}
+
+            {% if not is_completed_activity %}
+            <p id="is_completed_activity">☆☆☆今日の行動記録を入力してください☆☆☆  >> <a href="mypage:{{ User_code }}/edit/activity">入力する</a></p>
+            {% endif %}
+
+            {% if ( is_completed_health and is_completed_activity) %}
+                <p>☆☆☆お知らせはありません☆☆☆</p>
+            {% endif %}
         </fieldset>
         <div id="select_button">
             <button class="menuButton" data-menu="menu1">記入</button>
             <div id="menu1" class="menu">
+                {% if not is_completed_health %}
                 <a href="/mypage:{{ User_code }}/edit/health">健康記録表</a>
+                {% endif %}
                 <a href="/mypage:{{ User_code }}/edit/activity">行動記録表</a>
                 <a href="/mypage:{{ User_code }}/edit/infection">感染記録表</a>
                 <a href="/mypage:{{ User_code }}/edit/vaccine">ワクチン接種記録表</a>
             </div>
-
+            <button class="logoutButton" onclick="location.href = '/mypage:{{ User_code }}/logout'">
+                ログアウト
+            </button>
         </div>
     </div>
     <div id="logs-table">

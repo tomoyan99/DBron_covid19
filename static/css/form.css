@@ -14,7 +14,7 @@ body {
     text-align: center;
     border-radius: 8px;
     background-color: #FAFAFA;
-    overflow-y:scroll;
+    overflow-y:auto;
     .head {
         border-radius: 8px 0 0 0;
         background-color: #2ABCA7;
@@ -41,13 +41,14 @@ body {
         text-align: left;
         border: none;
         border-bottom: 1px solid #1f7f71;
+        width: 20%;
     }
 
     label {
         display: block;
         margin-top: 10px;
     }
-    input, textarea {
+    input, textarea ,select{
         font-size: 1.05em;
         padding: 6px 0 6px 0;
         font-family: 'Source Sans Pro',arial,sans-serif;
@@ -67,18 +68,19 @@ body {
         margin-right: 0;
         background-clip: padding-box;
         box-sizing: border-box;
-        width: 50%;
-        max-width: 90px;
+        width: 100%;
+        max-width: 50px;
     }
     input[type="number"]{
         font-size: 1.1em;
         padding: 15px 10px 10px;
         border: 1px solid #676767;
+        border-radius: 5px;
         background: #FAFAFA;
-        margin-left: 70%;
+        margin-left: 0%;
         background-clip: padding-box;
         box-sizing: border-box;
-        width: 30%;
+        width: 100%;
         max-width: 250px;
     }
     button {
@@ -104,9 +106,11 @@ body {
     width: 8px;
     height: 8px;
 }
+
 .container::-webkit-scrollbar-thumb {
     background: #00608d;
 }
+
 .container::-webkit-scrollbar-track {
     background: #bbdbf3;
 }
@@ -120,5 +124,5 @@ body {
     }
     body {
         padding-top:10px;
-    }  
+    }
 }

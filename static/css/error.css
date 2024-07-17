@@ -1,0 +1,85 @@
+/*外枠*/
+body {
+    padding-top: 25px;
+    background-color:#777777;
+    margin-left:10px;
+    margin-right:10px;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+}
+/*中枠*/
+.container {
+    display: block;
+    margin:0 auto;
+    min-height: 300px;
+    max-width: 600px;
+    text-align: left;
+    border-radius:6px;
+    background-color:#FAFAFA;
+    .head {
+        width: 100%;
+        height: 100%;
+        border-radius:6px 6px 0px 0px;
+        background-color:#2ABCA7;
+        color:#FAFAFA;
+        h2 {
+            padding:18px 0 18px 0;
+            font-size: 1.8em;
+            position: relative;
+            text-align: left;
+            left: 20px;
+        }
+    }
+    .body{
+        height:100%;
+        width:100%;
+        h3{
+            position: relative;
+            text-align: left;
+            left: 20px;
+            color: #D54358;
+        }
+    }
+    .foot{
+        height: 100%;
+        width: 100%;
+        bottom: 0;
+        margin-top: 13%;
+        text-align: center;
+        button {
+            font-size: 1.1em;
+            background-color:#2ABCA7;
+            color:#FAFAFA;
+            width: 60%;
+            border: 2px solid;
+            padding: 10px 20px;
+            cursor: pointer;
+            flex-grow: 1;
+        }
+        button:hover {
+            animation: button-color forwards 0.3s;
+        }
+    }
+}
+/* 小さくなっても大丈夫 */
+@media (max-width: 700px) {
+    input, textarea {
+        width: 90%;
+    }
+    button {
+        width:90%;
+    }
+    body {
+        padding-top:10px;
+    }
+}
+@keyframes button-color {
+    0%{
+        background-color: #2ABCA7;
+    }
+    100%{
+        color: #fff;
+        background-color: #19a08c;
+    }
+}
+
+
