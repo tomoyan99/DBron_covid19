@@ -1,13 +1,15 @@
 import json
 import secrets
 
+import numpy as np
+import pandas as pd
 from flask import Flask, render_template, session, request, redirect, abort
 
 from modules.MyDatabase import MyDatabase
 from flask_session import Session
 from modules.components.result import comp_result
 from datetime import datetime
-
+import math
 
 # ランダムなSECRET_KEYを生成
 secret_key = secrets.token_hex(32)
@@ -34,6 +36,20 @@ def goto_error(title, desc):
     return redirect("/error")
 
 
+# DBの1とか0とかを任意の文字に変えるやつ
+def replace_df_values(df, true_word='true_word', false_word='false_word', nan_word='nan_word'):
+    # "0"をfalse_wordに置換
+    df.replace(0, false_word, inplace=True)
+
+    # "1"をtrue_wordに置換
+    df.replace(1, true_word, inplace=True)
+
+    # NaNをnan_wordに置換
+    df.replace("nan", nan_word, inplace=True)
+
+    return df
+
+
 # ユーザーデータ、健康管理表、行動管理表のデータをまとめた、
 # main_dataを作る関数
 def create_main_data(User_code):
@@ -45,21 +61,27 @@ def create_main_data(User_code):
         health_data_sql = f"""
                             select * from health
                                 where User_code = '{User_code}' 
-                                AND Updated >= NOW() - INTERVAL 7 DAY; 
+                                AND Updated >= NOW() - INTERVAL 7 DAY
+                                ORDER BY Updated DESC; 
                             """
         activity_data_sql = f"""
                             select * from activity
                                 where User_code = '{User_code}' 
-                                AND Updated >= NOW() - INTERVAL 7 DAY;
+                                AND Updated >= NOW() - INTERVAL 7 DAY
+                                ORDER BY Updated DESC;
                             """
         infection_data_sql = f"""
                             select * from infection
-                                where User_code = '{User_code}' 
+                                where User_code = '{User_code}'                                
+                                AND Infection_stop >= NOW() - INTERVAL 1 YEAR
+                                ORDER BY Infection_stop DESC;
                             """
 
         vaccine_data_sql = f"""
                             select * from vaccine
-                                where User_code = '{User_code}' 
+                                where User_code = '{User_code}'
+                                AND vaccine_date >= NOW() - INTERVAL 1 YEAR
+                                ORDER BY vaccine_date DESC;
                             """
 
         user_data = DB.read(user_data_sql)
@@ -71,18 +93,27 @@ def create_main_data(User_code):
         del health_data["User_code"]
         del health_data["Health_ID"]
 
+        health_data = replace_df_values(health_data, "あり", "なし", "未記入")
+
         del activity_data["User_code"]
         del activity_data["Activity_ID"]
         del activity_data["Is_companions"]
 
+        activity_data = replace_df_values(activity_data, "あり", "なし", "未記入")
+
         del infection_data["User_code"]
+
+        infection_data = replace_df_values(infection_data, "はい", "いいえ", "未記入")
 
         del vaccine_data["User_code"]
         del vaccine_data["vaccine_ID"]
 
+        vaccine_data = replace_df_values(vaccine_data, "", "", "未記入")
+
         return user_data, health_data, activity_data, infection_data, vaccine_data
     else:
         raise Exception("データベースにユーザーが見つからない")
+
 
 # request.formから現在時刻、User_codeを追加したdictを返す
 def form_to_data(form):
@@ -96,6 +127,7 @@ def form_to_data(form):
     form_dict["Updated"] = updated
 
     return form_dict
+
 
 # ルート画面。
 # 今はテスト画面を表示してるけど、そのうちsigninにリダイレクトする予定
@@ -114,7 +146,7 @@ def home():
 
 @app.route("/test")
 def test():
-    return render_template("test.html", result=comp_result(True))
+    return render_template("test.html")
 
 
 # ログイン画面
@@ -206,7 +238,7 @@ def mypage(User_code):
 @app.route("/mypage:<User_code>/edit/health", methods=["GET", "POST"])
 def edit_health(User_code):
     if not request.form:
-        return render_template("mypages/subpages/health.html", result=comp_result(False,))
+        return render_template("mypages/subpages/health.html", result=comp_result(False, ))
     else:
         data = form_to_data(request.form)
         DB.write("health", data)
@@ -217,30 +249,30 @@ def edit_health(User_code):
 @app.route("/mypage:<User_code>/edit/activity")
 def edit_activity(User_code):
     if not request.form:
-        return render_template("mypages/subpages/activity.html", result=comp_result(False,User_code))
+        return render_template("mypages/subpages/activity.html", result=comp_result(False, User_code))
     else:
         print(json.dumps(request.form, indent=2))
-        return render_template("mypages/subpages/activity.html", result=comp_result(True,User_code))
+        return render_template("mypages/subpages/activity.html", result=comp_result(True, User_code))
 
 
 # 観戦記録画面
 @app.route("/mypage:<User_code>/edit/infection")
 def edit_infection(User_code):
     if not request.form:
-        return render_template("mypages/subpages/infection.html", result=comp_result(False,User_code))
+        return render_template("mypages/subpages/infection.html", result=comp_result(False, User_code))
     else:
         print(json.dumps(request.form, indent=2))
-    return render_template("mypages/subpages/infection.html", result=comp_result(True,User_code))
+    return render_template("mypages/subpages/infection.html", result=comp_result(True, User_code))
 
 
 # ワクチン接種記録画面
 @app.route("/mypage:<User_code>/edit/vaccine")
 def edit_vaccine(User_code):
     if not request.form:
-        return render_template("mypages/subpages/vaccine.html", result=comp_result(False,User_code))
+        return render_template("mypages/subpages/vaccine.html", result=comp_result(False, User_code))
     else:
         print(json.dumps(request.form, indent=2))
-    return render_template("mypages/subpages/vaccine.html", result=comp_result(True,User_code))
+    return render_template("mypages/subpages/vaccine.html", result=comp_result(True, User_code))
 
 
 # 編集更新
@@ -254,6 +286,7 @@ def edit_update(User_code):
 @app.route("/mypage:<User_code>/edit/delete")
 def edit_delete(User_code):
     return render_template("mypages/subpages/delete.html")
+
 
 # エラーページ画面
 @app.route("/error")

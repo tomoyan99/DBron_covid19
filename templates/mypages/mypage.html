@@ -58,7 +58,13 @@
                         {% for row in health_data %}
                             <tr>
                                 {% for cell in row %}
-                                    <td>{{ cell }}</td>
+                                    <td>
+                                        {% if cell == "あり" %}
+                                            <span style="color: red;"><b>{{ cell }}</b></span>
+                                        {% else %}
+                                            {{ cell }}
+                                        {% endif %}
+                                    </td>
                                 {% endfor %}
                             </tr>
                         {% endfor %}
