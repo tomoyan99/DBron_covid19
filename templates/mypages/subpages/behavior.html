@@ -1,44 +1,66 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <title>{title}</title>
-        <meta charset="utf-8">
-    </head>
-    <body>
+<head>
+    <title>行動記録入力フォーム</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/behavior.css') }}">
+</head>
+<body>
 
-        <h2>行動記録入力フォーム<br>以下の項目を入力してください</h2>
+<div class="container">
+    <div class="head">
+        <h2>行動記録入力フォーム</h2>
+    </div>
 
-        <form>
-            <label>開始時間:</label>
-            <input type="datetime-local" name="Action_starttime" required><br>
+    <form action="/mypage/edit/result" method="post">
+        <table>
+            <tr>
+                <td><label>開始時間:</label></td>
+                <td><input type="datetime-local" name="Action_starttime" required></td>
+            </tr>
+            <tr>
+                <td><label>終了時間:</label></td>
+                <td><input type="datetime-local" name="Action_endtime" required></td>
+            </tr>
+            <tr>
+                <td><label>場所:</label></td>
+                <td><input type="text" name="Move_location" required></td>
+            </tr>
+            <tr>
+                <td><label>移動方法:</label></td>
+                <td><input type="text" name="Move_method" required></td>
+            </tr>
+            <tr>
+                <td><label>出発地:</label></td>
+                <td><input type="text" name="Departure" required></td>
+            </tr>
+            <tr>
+                <td><label>到着地:</label></td>
+                <td><input type="text" name="Arrival" required></td>
+            </tr>
+            <tr>
+                <td><label>同行者:</label></td>
+                <td>
+                    <label>
+                        <input type="radio" name="Is_companions" value="1">はい
+                        <input type="radio" name="Is_companions" value="0" checked>いいえ
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td><label>間柄と人数:</label></td>
+                <td><input type="text" name="Companions"></td>
+            </tr>
+            <tr>
+                <td><label>特記事項:</label></td>
+                <td><input type="text" name="Special_notices" maxlength="50"></td>
+            </tr>
+        </table>
 
-            <label>終了時間:</label>
-            <input type="datetime-local" name="Action_endtime" required><br>
+        <button type="submit">送信</button>
+        <button type="reset">消去</button>
+    </form>
+</div>
 
-            <label>場所:</label>
-            <input type="text" name="Move_location" required><br>
-
-            <label>移動方法:</label>
-            <input type="text" name="Move_method" required><br>
-
-            <label>出発地:</label>
-            <input type="text" name="Departure" required><br>
-
-            <label>到着地:</label>
-            <input type="text" name="Arrival" required><br>
-
-            <label>同行者:</label>
-            <label><input type="radio" name="Is_companions" value="TRUE">はい</label>
-            <label><input type="radio" name="Is_companions" value="FALSE" checked>いいえ</label><br>
-
-            <label>間柄と人数:</label>
-            <input type="text" name="Companions"><br>
-
-            <label>特記事項:</label>
-            <input type="text" name="Special_notices" maxlength="50"><br>
-
-            <input type="submit" value="送信">
-            <input type="reset" value="消去">
-        </form>
-    </body>
+</body>
 </html>

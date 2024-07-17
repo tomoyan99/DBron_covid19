@@ -3,21 +3,25 @@
 <head>
 	<title>Signin</title>
 	<meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signin.css') }}">
 </head>
 <body>
-    <fieldset>
-        <legend><h2>アカウントでログイン</h2></legend>
+    <div class="container">
+        <div class="head">
+            <h2>アカウントでログイン</h2>
+        </div>
         <form action="/data/login" method="post">
             <label>学籍ID:
                 <input type="text" name="User_code" required>
             </label>
-            <input type="submit" value="送信">
-            <input type="reset" value="消去">
+            <br>
+            <button type="submit">送信</button>
+            <button type="reset">消去</button>
         </form>
-    </fieldset>
-    <p>
-        <span>初めての方は<a href="/signup">コチラ</a></span>
-    </p>
+        <p>
+            <span>初めての方は<a href="/signup">コチラ</a></span>
+        </p>
+    </div>
 </body>
 
 </html>

@@ -3,8 +3,9 @@ import secrets
 
 from flask import Flask, render_template, session, request, redirect, abort
 
-from MyDatabase import MyDatabase
+from modules.MyDatabase import MyDatabase
 from flask_session import Session
+from modules.components.result import comp_result
 
 # ランダムなSECRET_KEYを生成
 secret_key = secrets.token_hex(32)
@@ -77,7 +78,7 @@ def create_main_data(User_code):
         del vaccine_data["User_code"]
         del vaccine_data["vaccineID"]
 
-        return user_data, health_data, behavior_data,infection_data,vaccine_data
+        return user_data, health_data, behavior_data, infection_data, vaccine_data
     else:
         raise Exception("データベースにユーザーが見つからない")
 
@@ -186,6 +187,54 @@ def mypage():
         print(e)
         return goto_error("マイページ読み込みエラー",
                           "マイページの読み込みに失敗しました。<br>セッション情報が初期化されたなどの原因が考えられます。<br>もう一度サインインからやり直してください")
+
+
+# 健康記録画面
+@app.route("/mypage/edit/health", methods=["GET","POST"])
+def edit_health():
+    if not request.form:
+        return render_template("mypages/subpages/health.html", result=comp_result(False))
+    else:
+        print(json.dumps(request.form,indent=2))
+        return render_template("mypages/subpages/health.html", result=comp_result(True))
+
+
+# 活動記録画面
+@app.route("/mypage/edit/behavior")
+def edit_behavior():
+    return render_template("mypages/subpages/behavior.html")
+
+
+# 観戦記録画面
+@app.route("/mypage/edit/infection")
+def edit_infection():
+    return render_template("mypages/subpages/infection.html")
+
+
+# ワクチン接種記録画面
+@app.route("/mypage/edit/vaccine")
+def edit_vaccine():
+    return render_template("mypages/subpages/vaccine.html")
+
+
+# 編集更新
+@app.route("/mypage/edit/update")
+def edit_update():
+    return render_template("mypages/subpages/update.html")
+
+
+# 削除更新
+# いる？
+@app.route("/mypage/edit/delete")
+def edit_delete():
+    return render_template("mypages/subpages/delete.html")
+
+
+@app.route("/mypage/edit/result:<page_name>")
+def edit_result(page_name):
+    form_data = request.form
+    print(json.dumps(form_data, indent=2))
+    return render_template(f"mypages/subpages/{page_name}.html")
 
 
 # エラーページ画面

@@ -1,5 +1,4 @@
-from ssl import MemoryBIO
-from MyDatabase import MyDatabase
+from modules.MyDatabase import MyDatabase
 import pandas as pd
 import datetime
 

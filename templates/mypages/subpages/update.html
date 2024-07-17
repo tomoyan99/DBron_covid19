@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/update.css') }}">
+    <title>症状追加</title>
+</head>
+<body>
+    <div class="container">
+        <div class="head">
+            <h1>症状追加</h1>
+        </div>
+        <form action="/data/update" method="post">
+            <table>
+                <tr>
+                    <td>追加するデータベース名:</td>
+                    <td><input name="update" type="text" required></td>
+                </tr>
+            </table>
+            <button type="submit">送信</button>
+            <button type="reset">消去</button>
+        </form>
+    </div>
+</body>
+</html>
+
+        <!--  USE dbron11; ALTER TABLE health ADD {update} BOOLEAN; -->

@@ -1,22 +1,46 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <title>{title}</title>
-        <meta charset="utf-8">
-    </head>
-    <body>
-        <h2>感染記録<br></h2>
-
-        <form>
-            <label>感染しましたか？</label>
-            <label><input type="radio" name="Infection_status" value="TRUE">はい</label>
-            <label><input type="radio" name="Infection_status" value="FALSE" checked>いいえ</label><br>
-
-            <label>日時:</label>
-            <input type="datetime-local" name="Infection_date" required><br>
-
-            <input type="submit" value="送信">
-            <input type="reset" value="消去">
+<head>
+    <title>感染記録</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/infection.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="head">
+            <h2>感染記録</h2>
+        </div>
+        <form action="/mypage/edit/result" method="post">
+            <table>
+                <tr>
+                    <td>感染しましたか？</td>
+                    <td>
+                        <label>
+                            <input type="radio" name="Infection_status" value="1">はい
+                            <input type="radio" name="Infection_status" value="0" checked>いいえ
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>出席停止日:</td>
+                    <td><input type="date" name="Infection_start" required></td>
+                </tr>
+                <tr>
+                    <td>出席開始日:</td>
+                    <td><input type="date" name="Infection_stop" required></td>
+                </tr>
+                <tr>
+                    <td>病院:</td>
+                    <td><input type="text" name="medical_name"></td>
+                </tr>
+                <tr>
+                    <td>先生:</td>
+                    <td><input type="text" name="doctor_name"></td>
+                </tr>
+            </table>
+            <button type="submit">送信</button>
+            <button type="reset">消去</button>
         </form>
-    </body>
+    </div>
+</body>
 </html>

@@ -1,0 +1,95 @@
+body {
+    padding-top:5px;
+    background-color:#777777;
+    margin-left:10px;
+    margin-right:10px;
+}
+.container {
+    max-width:550px;
+    max-height: 500px;
+    margin:0 auto;
+    text-align:center;
+    border-radius:6px;
+    background-color:#FAFAFA;
+}
+.head {
+    border-radius:6px 6px 0px 0px;
+    background-color:#2ABCA7;
+    color:#FAFAFA;
+}
+h2 {
+    text-align:center;
+    padding:15px 0 15px 0;
+    font-size: 1.8em;
+    margin-top: 9px;
+    margin-bottom: 10px;
+}
+
+span {
+    display: block; /* テキスト部分をブロック要素にして上に配置 */
+    text-align: left; /* テキストを左揃え */
+    margin-left: 10%; /* テキストと入力フィールドの間にスペースを追加 */
+}
+
+
+input:first-of-type select:first-of-type{
+    margin-bottom:15px;
+}
+
+input, select {
+    font-size: 1.1em;
+    padding: 12px 10px 10px;
+    font-family: 'Source Sans Pro',arial,sans-serif;
+    border: 1px solid #676767;
+    background: #FAFAFA;
+    border-radius: 5px;
+    background-clip: padding-box;
+    box-sizing: border-box;
+    width: 80%;
+    max-width: 600px;
+    margin-bottom: 15px;
+}
+input::placeholder{
+    color: #c5c5c5;
+}
+
+::-webkit-input-placeholder {
+    color: #FAFAFA;
+}
+
+button {
+    margin-top:5px;
+    margin-bottom:10px;
+    background-color:#2ABCA7;
+    padding: 10px 30px;
+    border-radius: 5px;
+    border: 1px solid #2ABCA7;
+    transition: .5s;
+    display: inline-block;
+    cursor: pointer;
+    width:30%;
+    color:#fff;
+    font-size: 1.2em;
+}
+button:hover, .button:hover {
+    background:#19a08c;
+}
+
+b {
+    color: #ff0000;
+}
+/* media queries */
+@media (max-width: 700px) {
+    label.error {
+        width: 90%;
+    }
+    input, textarea {
+        width: 90%;
+    }
+    button {
+        width:90%;
+    }
+    body {
+        padding-top:10px;
+    }  
+}
