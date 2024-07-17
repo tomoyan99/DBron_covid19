@@ -6,15 +6,14 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #105611;
+    background-color: rgba(16, 86, 17, 0.75);
     color: white;
     text-align: center;
     padding: 0;
     display: grid;
     justify-content: space-between;
     align-items: center;
-    z-index: 100;
-    opacity: 0.8;
+    /*opacity: 0.8;*/
     #popup-container{
         position: absolute;
         width: 40%;
