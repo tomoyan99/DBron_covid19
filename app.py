@@ -6,6 +6,8 @@ from flask import Flask, render_template, session, request, redirect, abort
 from modules.MyDatabase import MyDatabase
 from flask_session import Session
 from modules.components.result import comp_result
+from datetime import datetime
+
 
 # ランダムなSECRET_KEYを生成
 secret_key = secrets.token_hex(32)
@@ -67,21 +69,33 @@ def create_main_data(User_code):
         vaccine_data = DB.read(vaccine_data_sql)
 
         del health_data["User_code"]
-        del health_data["HealthID"]
+        del health_data["Health_ID"]
 
         del activity_data["User_code"]
-        del activity_data["activityID"]
+        del activity_data["Activity_ID"]
         del activity_data["Is_companions"]
 
         del infection_data["User_code"]
 
         del vaccine_data["User_code"]
-        del vaccine_data["vaccineID"]
+        del vaccine_data["vaccine_ID"]
 
         return user_data, health_data, activity_data, infection_data, vaccine_data
     else:
         raise Exception("データベースにユーザーが見つからない")
 
+# request.formから現在時刻、User_codeを追加したdictを返す
+def form_to_data(form):
+    form_dict = form.to_dict()
+    # 現在時刻を取得
+    now = datetime.now()
+    # MySQLのTIMESTAMP形式にフォーマット
+    updated = now.strftime('%Y-%m-%d %H:%M:%S')
+
+    form_dict["User_code"] = session["user_data"]["User_code"][0]
+    form_dict["Updated"] = updated
+
+    return form_dict
 
 # ルート画面。
 # 今はテスト画面を表示してるけど、そのうちsigninにリダイレクトする予定
@@ -100,11 +114,11 @@ def home():
 
 @app.route("/test")
 def test():
-    return render_template("test.html",result=comp_result(True))
+    return render_template("test.html", result=comp_result(True))
 
 
 # ログイン画面
-@app.route("/login",methods=["get","post"])
+@app.route("/login", methods=["get", "post"])
 def login():
     session.clear()
     if not request.form:
@@ -120,8 +134,9 @@ def login():
             return goto_error("ID未入力エラー", "IDが入力されませんでした")
         return redirect(f"/fetch:{User_code}")
 
+
 # サインアップ画面
-@app.route("/signup",methods=["get","post"])
+@app.route("/signup", methods=["get", "post"])
 def signup():
     session.clear()
     if not request.form:
@@ -160,18 +175,18 @@ def fetch_data(User_code):
     session["activity_data"] = activity_data.values
     session["infection_data"] = infection_data.values
     session["vaccine_data"] = vaccine_data.values
-    return redirect("/mypage")
+    return redirect(f"/mypage:{User_code}")
 
 
 # マイページ画面
-@app.route("/mypage")
-def mypage():
+@app.route("/mypage:<User_code>")
+def mypage(User_code):
     try:
         referer = request.headers.get('Referer')
         # Refererが /login を含むかチェック
         if referer and ("/login" in referer or "/signup" in referer or "/mypage" in referer):
             return render_template("/mypages/mypage.html",
-                                   User_code=session["user_data"]["User_code"][0],
+                                   User_code=User_code,
                                    User_name=session["user_data"]["User_name"][0],
                                    Admin_rights=session["user_data"]["Admin_rights"][0],
                                    health_data=session["health_data"],
@@ -188,67 +203,57 @@ def mypage():
 
 
 # 健康記録画面
-@app.route("/mypage/edit/health", methods=["GET","POST"])
-def edit_health():
+@app.route("/mypage:<User_code>/edit/health", methods=["GET", "POST"])
+def edit_health(User_code):
     if not request.form:
-        return render_template("mypages/subpages/health.html", result=comp_result(False))
+        return render_template("mypages/subpages/health.html", result=comp_result(False,))
     else:
-        print(json.dumps(request.form,indent=2))
-        data = request.form.to_dict()
-        data["User_code"] = session["user_data"]["User_code"]
-        DB.write("")
+        data = form_to_data(request.form)
+        DB.write("health", data)
         return render_template("mypages/subpages/health.html", result=comp_result(True))
 
 
 # 活動記録画面
-@app.route("/mypage/edit/activity")
-def edit_activity():
+@app.route("/mypage:<User_code>/edit/activity")
+def edit_activity(User_code):
     if not request.form:
-        return render_template("mypages/subpages/activity.html", result=comp_result(False))
+        return render_template("mypages/subpages/activity.html", result=comp_result(False,User_code))
     else:
-        print(json.dumps(request.form,indent=2))
-        return render_template("mypages/subpages/activity.html", result=comp_result(True))
+        print(json.dumps(request.form, indent=2))
+        return render_template("mypages/subpages/activity.html", result=comp_result(True,User_code))
 
 
 # 観戦記録画面
-@app.route("/mypage/edit/infection")
-def edit_infection():
+@app.route("/mypage:<User_code>/edit/infection")
+def edit_infection(User_code):
     if not request.form:
-        return render_template("mypages/subpages/infection.html", result=comp_result(False))
+        return render_template("mypages/subpages/infection.html", result=comp_result(False,User_code))
     else:
-        print(json.dumps(request.form,indent=2))
-    return render_template("mypages/subpages/infection.html", result=comp_result(True))
+        print(json.dumps(request.form, indent=2))
+    return render_template("mypages/subpages/infection.html", result=comp_result(True,User_code))
 
 
 # ワクチン接種記録画面
-@app.route("/mypage/edit/vaccine")
-def edit_vaccine():
+@app.route("/mypage:<User_code>/edit/vaccine")
+def edit_vaccine(User_code):
     if not request.form:
-        return render_template("mypages/subpages/vaccine.html", result=comp_result(False))
+        return render_template("mypages/subpages/vaccine.html", result=comp_result(False,User_code))
     else:
-        print(json.dumps(request.form,indent=2))
-    return render_template("mypages/subpages/vaccine.html", result=comp_result(True))
+        print(json.dumps(request.form, indent=2))
+    return render_template("mypages/subpages/vaccine.html", result=comp_result(True,User_code))
 
 
 # 編集更新
-@app.route("/mypage/edit/update")
-def edit_update():
+@app.route("/mypage:<User_code>/edit/update")
+def edit_update(User_code):
     return render_template("mypages/subpages/update.html")
 
 
 # 削除更新
 # いる？
-@app.route("/mypage/edit/delete")
-def edit_delete():
+@app.route("/mypage:<User_code>/edit/delete")
+def edit_delete(User_code):
     return render_template("mypages/subpages/delete.html")
-
-
-@app.route("/mypage/edit/result:<page_name>")
-def edit_result(page_name):
-    form_data = request.form
-    print(json.dumps(form_data, indent=2))
-    return render_template(f"mypages/subpages/{page_name}.html")
-
 
 # エラーページ画面
 @app.route("/error")

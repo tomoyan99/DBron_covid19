@@ -64,7 +64,7 @@ def create_test_data():
                     ('{rowdata.User_code}','{rowdata.Action_starttime}','{rowdata.Action_endtime}','{rowdata.Action_location}','{rowdata.Move_method}','{rowdata.Departure}','{rowdata.Arrival}',{rowdata.Is_companions},'{rowdata.Companions}','{rowdata.Special_notices}','{dt_now}')
                     ;
                 """]
-            elif fn == "./test_data/infectio.csv":
+            elif fn == "./test_data/infection.csv":
                 # infectionテーブルの場合
                 query_stacks += [f"""
                     INSERT INTO infection

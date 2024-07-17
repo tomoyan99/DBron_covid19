@@ -66,7 +66,7 @@ class MyDatabase:
 
     def check_exist_primal(self, primal_key):
         try:
-            sql = f"SELECT COUNT(*) FROM basic_information WHERE User_code = '{primal_key}'"
+            sql = f"SELECT COUNT(*) FROM users WHERE User_code = '{primal_key}'"
             self._execute_query(sql)
             result = self.cur.fetchall()
             # 一つもなかったらFalse,一つでもあったらTrue
