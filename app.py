@@ -104,52 +104,63 @@ def test():
 
 
 # ログイン画面
-@app.route("/login")
+@app.route("/login",methods=["get,post"])
 def login():
     session.clear()
-    return render_template("logins/signin.html")
-
+    if not request.form:
+        return render_template("logins/signin.html")
+    else:
+        User_code = request.form.get("User_code", default=None, type=str)
+        if User_code:
+            session["User_code"] = User_code
+            # print(DB.check_exist_primal(User_code))
+            if not DB.check_exist_primal(User_code):
+                return goto_error("未登録エラー", "そのIDのユーザーは登録されていません")
+        else:
+            return goto_error("ID未入力エラー", "IDが入力されませんでした")
+        return redirect(f"/fetch:{User_code}")
 
 # サインアップ画面
-@app.route("/signup")
+@app.route("/signup",methods=["get,post"])
 def signup():
-    return render_template("logins/signup.html")
-
-
-# サインイン/データ処理部
-@app.route("/data/login", methods=["post"])
-def data_login():
-    User_code = request.form.get("User_code", default=None, type=str)
-    if User_code:
-        session["User_code"] = User_code
-        # print(DB.check_exist_primal(User_code))
-        if not DB.check_exist_primal(User_code):
-            return goto_error("未登録エラー", "そのIDのユーザーは登録されていません")
+    session.clear()
+    if not request.form:
+        return render_template("logins/signup.html")
     else:
-        return goto_error("ID未入力エラー", "IDが入力されませんでした")
+        # formの結果をミュータブルなdictに変換
+        signup_data = request.form.to_dict()
+        # 何らかの影響でformデータがなかったらエラー
+        if not signup_data:
+            return goto_error("サインアップエラー", "サインアップデータが取得できませんでした")
+        if DB.check_exist_primal(signup_data["User_code"]):
+            return goto_error("ユーザー登録済みエラー", "その学籍番号のユーザーはすでに登録されています")
+        else:
+            # 管理者パスワードをチェックして管理者権限の有無を付与
+            signup_data["Admin_rights"] = "1" if signup_data["Admin_password"] == "admin" else "0"
+            # signup_dataからAdmin_passwordプロパティの削除
+            del signup_data["Admin_password"]
+            User_code = signup_data["User_code"]
+            # DBにユーザーを追加
+            DB.write("basic_information", signup_data)
+            del signup_data
+            return redirect(f"/fetch:{User_code}")
+
+
+@app.route("/fetch:<User_code>")
+def fetch_data(User_code):
+    # ユーザごとの情報をだけを抽出
+    (user_data,
+     health_data,
+     behavior_data,
+     infection_data,
+     vaccine_data
+     ) = create_main_data(User_code)
+    session["user_data"] = user_data
+    session["health_data"] = health_data.values
+    session["behavior_data"] = behavior_data.values
+    session["infection_data"] = infection_data.values
+    session["vaccine_data"] = vaccine_data.values
     return redirect("/mypage")
-
-
-# サインアップ/データ処理部
-@app.route("/data/signup", methods=["post"])
-def data_signup():
-    # formの結果をミュータブルなdictに変換
-    signup_data = request.form.to_dict()
-    # 何らかの影響でformデータがなかったらエラー
-    if not signup_data:
-        return goto_error("サインアップエラー", "サインアップデータが取得できませんでした")
-    if DB.check_exist_primal(signup_data["User_code"]):
-        return goto_error("ユーザー登録済みエラー", "その学籍番号のユーザーはすでに登録されています")
-    else:
-        # 管理者パスワードをチェックして管理者権限の有無を付与
-        signup_data["Admin_rights"] = "1" if signup_data["Admin_password"] == "admin" else "0"
-        # signup_dataからAdmin_passwordプロパティの削除
-        del signup_data["Admin_password"]
-        session["User_code"] = signup_data["User_code"]
-        # print(signup_data)
-        # DBにユーザーを追加
-        DB.write("basic_information", signup_data)
-        return redirect("/mypage")
 
 
 # マイページ画面
@@ -158,19 +169,7 @@ def mypage():
     try:
         referer = request.headers.get('Referer')
         # Refererが /login を含むかチェック
-        if referer and ("/login" in referer or "/signup" in referer or "/mypage" in referer):
-            # ユーザごとの情報をだけを抽出
-            (user_data,
-             health_data,
-             behavior_data,
-             infection_data,
-             vaccine_data
-             ) = create_main_data(session["User_code"])
-            session["user_data"] = user_data
-            session["health_data"] = health_data.values
-            session["behavior_data"] = behavior_data.values
-            session["infection_data"] = infection_data.values
-            session["vaccine_data"] = vaccine_data.values
+        if referer and ("/fetch" in referer or "/mypage" in referer):
             return render_template("/mypages/mypage.html",
                                    User_code=session["user_data"]["User_code"][0],
                                    User_name=session["user_data"]["User_name"][0],
@@ -182,7 +181,6 @@ def mypage():
                                    )
         else:
             abort(403)  # Forbidden
-
     except Exception as e:
         print(e)
         return goto_error("マイページ読み込みエラー",
@@ -202,19 +200,31 @@ def edit_health():
 # 活動記録画面
 @app.route("/mypage/edit/behavior")
 def edit_behavior():
-    return render_template("mypages/subpages/behavior.html")
+    if not request.form:
+        return render_template("mypages/subpages/behavior.html", result=comp_result(False))
+    else:
+        print(json.dumps(request.form,indent=2))
+        return render_template("mypages/subpages/behavior.html", result=comp_result(True))
 
 
 # 観戦記録画面
 @app.route("/mypage/edit/infection")
 def edit_infection():
-    return render_template("mypages/subpages/infection.html")
+    if not request.form:
+        return render_template("mypages/subpages/infection.html", result=comp_result(False))
+    else:
+        print(json.dumps(request.form,indent=2))
+    return render_template("mypages/subpages/infection.html", result=comp_result(True))
 
 
 # ワクチン接種記録画面
 @app.route("/mypage/edit/vaccine")
 def edit_vaccine():
-    return render_template("mypages/subpages/vaccine.html")
+    if not request.form:
+        return render_template("mypages/subpages/vaccine.html", result=comp_result(False))
+    else:
+        print(json.dumps(request.form,indent=2))
+    return render_template("mypages/subpages/vaccine.html", result=comp_result(True))
 
 
 # 編集更新

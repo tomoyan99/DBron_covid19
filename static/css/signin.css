@@ -10,66 +10,65 @@ body {
     text-align:center;
     border-radius:6px;
     background-color:#FAFAFA;
-}
-.head {
-    border-radius:6px 6px 0px 0px;
-    background-color:#2ABCA7;
-    color:#FAFAFA;
-}
-h2 {
-    text-align:center;
-    padding:18px 0 18px 0;
-    font-size: 1.8em;
-}
-p {
-    position: relative; 
-    text-align: left;
-    left: 30px;
-}
+    .head {
+        border-radius:6px 6px 0px 0px;
+        background-color:#2ABCA7;
+        color:#FAFAFA;
+    }
+    h2 {
+        text-align:center;
+        padding:18px 0 18px 0;
+        font-size: 1.8em;
+    }
+    p {
+        position: relative;
+        text-align: left;
+        left: 30px;
+    }
 
-input {
-    margin-bottom:10px;
+    input {
+        margin-bottom:10px;
+    }
+    textarea {
+        height:100px;
+        margin-bottom:10px;
+    }
+    input:first-of-type {
+        margin-top:35px;
+    }
+    input, textarea {
+        font-size: 1em;
+        padding: 15px 10px 10px;
+        font-family: 'Source Sans Pro',arial,sans-serif;
+        border: 1px solid #676767;
+        background: #FAFAFA;
+        border-radius: 5px;
+        background-clip: padding-box;
+        box-sizing: border-box;
+        width: 80%;
+        max-width: 600px;
+    }
+    ::-webkit-input-placeholder {
+        color: #FAFAFA;
+    }
+    button {
+        margin-top:15px;
+        margin-bottom:25px;
+        background-color:#2ABCA7;
+        padding: 12px 45px;
+        border-radius: 5px;
+        border: 1px solid #2ABCA7;
+        transition: .5s;
+        display: inline-block;
+        cursor: pointer;
+        width:40%;
+        color:#fff;
+        font-size: 1.2em;
+    }
+    button:hover, .button:hover {
+        background:#19a08c;
+    }
 }
-textarea {
-    height:100px;
-    margin-bottom:10px;
-}
-input:first-of-type {
-    margin-top:35px;
-}
-input, textarea {
-    font-size: 1em;
-    padding: 15px 10px 10px;
-    font-family: 'Source Sans Pro',arial,sans-serif;
-    border: 1px solid #676767;
-    background: #FAFAFA;
-    border-radius: 5px;
-    background-clip: padding-box;
-    box-sizing: border-box;
-    width: 80%;
-    max-width: 600px;
-}
-::-webkit-input-placeholder {
-    color: #FAFAFA;
-}
-button {
-    margin-top:15px;
-    margin-bottom:25px;
-    background-color:#2ABCA7;
-    padding: 12px 45px;
-    border-radius: 5px;
-    border: 1px solid #2ABCA7;
-    transition: .5s;
-    display: inline-block;
-    cursor: pointer;
-    width:40%;
-    color:#fff;
-    font-size: 1.2em;
-}
-button:hover, .button:hover {
-    background:#19a08c;
-}
-
 /* media queries */
 @media (max-width: 700px) {
     input, textarea {

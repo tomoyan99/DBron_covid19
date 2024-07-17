@@ -3,14 +3,17 @@
 <head>
     <title>感染記録</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/infection.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
 </head>
 <body>
+    {% if result %}
+        {{result | safe}}
+    {% endif %}
     <div class="container">
         <div class="head">
             <h2>感染記録</h2>
         </div>
-        <form action="/mypage/edit/result" method="post">
+        <form action="#" method="post">
             <table>
                 <tr>
                     <td>感染しましたか？</td>

@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/vaccine.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
     <title>ワクチン接種</title>
 </head>
 <body>
+    {% if result %}
+        {{result | safe}}
+    {% endif %}
     <div class="container">
         <div class="head">
             <h2>ワクチン接種</h2>
         </div>
-        <form action="/mypage/edit/result" method="post">
+        <form action="#" method="post">
             <table>
                 <tr>
                     <td>接種日</td>

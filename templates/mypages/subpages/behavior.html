@@ -3,17 +3,18 @@
 <head>
     <title>行動記録入力フォーム</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/behavior.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
 </head>
 <body>
-
-<div class="container">
-    <div class="head">
-        <h2>行動記録入力フォーム</h2>
-    </div>
-
-    <form action="/mypage/edit/result" method="post">
-        <table>
+    {% if result %}
+        {{result | safe}}
+    {% endif %}
+    <div class="container">
+        <div class="head">
+            <h2>行動記録入力フォーム</h2>
+        </div>
+        <form action="#" method="post">
+            <table>
             <tr>
                 <td><label>開始時間:</label></td>
                 <td><input type="datetime-local" name="Action_starttime" required></td>
@@ -43,6 +44,8 @@
                 <td>
                     <label>
                         <input type="radio" name="Is_companions" value="1">はい
+                    </label>
+                    <label>
                         <input type="radio" name="Is_companions" value="0" checked>いいえ
                     </label>
                 </td>
@@ -56,11 +59,10 @@
                 <td><input type="text" name="Special_notices" maxlength="50"></td>
             </tr>
         </table>
-
-        <button type="submit">送信</button>
-        <button type="reset">消去</button>
-    </form>
-</div>
+            <button type="submit">送信</button>
+            <button type="reset">消去</button>
+        </form>
+    </div>
 
 </body>
 </html>

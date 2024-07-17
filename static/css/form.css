@@ -9,14 +9,14 @@ body {
 
 .container {
     max-width: 600px;
-    max-height: 550px;
+    max-height: 94vh;
     margin: 0 auto;
     text-align: center;
-    border-radius: 6px;
+    border-radius: 8px;
     background-color: #FAFAFA;
     overflow-y:scroll;
     .head {
-        border-radius: 6px 6px 0 0;
+        border-radius: 8px 0 0 0;
         background-color: #2ABCA7;
         color: #FAFAFA;
     }
@@ -41,36 +41,45 @@ body {
         text-align: left;
         border: none;
         border-bottom: 1px solid #1f7f71;
-
     }
 
     label {
         display: block;
         margin-top: 10px;
     }
-
+    input, textarea {
+        font-size: 1.05em;
+        padding: 6px 0 6px 0;
+        font-family: 'Source Sans Pro',arial,sans-serif;
+        border: 1px solid #676767;
+        background: #FAFAFA;
+        border-radius: 5px;
+        background-clip: padding-box;
+        box-sizing: border-box;
+        width: 80%;
+        max-width: 300px;
+    }
     input[type="radio"] {
-        font-size: 1em;
+        transform: scale(1.2);
         padding: 15px 10px 10px;
         border: 1px solid #cecece;
         background: #FAFAFA;
-        margin-right: 5px;
+        margin-right: 0;
         background-clip: padding-box;
         box-sizing: border-box;
-        width: 80%;
+        width: 50%;
         max-width: 90px;
     }
     input[type="number"]{
-        font-size: 1em;
+        font-size: 1.1em;
         padding: 15px 10px 10px;
         border: 1px solid #676767;
         background: #FAFAFA;
-        margin-left: 40px;
+        margin-left: 70%;
         background-clip: padding-box;
         box-sizing: border-box;
-        width: 80%;
+        width: 30%;
         max-width: 250px;
-
     }
     button {
         margin-top:15px;
@@ -92,9 +101,15 @@ body {
 }
 
 .container::-webkit-scrollbar {
-    display: none;
+    width: 8px;
+    height: 8px;
 }
-
+.container::-webkit-scrollbar-thumb {
+    background: #00608d;
+}
+.container::-webkit-scrollbar-track {
+    background: #bbdbf3;
+}
 
 @media (max-width: 700px) {
     input, textarea, select {

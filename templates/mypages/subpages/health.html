@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>健康状態入力フォーム</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/health.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
 </head>
 <body>
     {% if result %}
@@ -23,8 +23,8 @@
                     <td>関節・筋肉痛:</td>
                     <td>
                         <label>
-                            <input type="radio" name="Kinniku_pain" value="1"> はい
-                            <input type="radio" name="Kinniku_pain" value="0" checked> いいえ
+                            はい<input type="radio" name="Kinniku_pain" value="1">
+                            いいえ<input type="radio" name="Kinniku_pain" value="0" checked>
                         </label>
                     </td>
                 </tr>
