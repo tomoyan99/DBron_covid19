@@ -17,16 +17,16 @@
     <div id="body">
         <fieldset id="information">
             <legend><h3>お知らせ！</h3></legend>
-            <p id="is_finished_health">☆☆☆今日の健康記録を入力してください☆☆☆  >> <a href="mypage/edit/health">入力する</a></p>
-            <p id="is_finished_activity">☆☆☆今日の行動記録を入力してください☆☆☆  >> <a href="mypage/edit/activity">入力する</a></p>
+            <p id="is_finished_health">☆☆☆今日の健康記録を入力してください☆☆☆  >> <a href="mypage:{{ User_code }}/edit/health">入力する</a></p>
+            <p id="is_finished_activity">☆☆☆今日の行動記録を入力してください☆☆☆  >> <a href="mypage:{{ User_code }}/edit/activity">入力する</a></p>
         </fieldset>
         <div id="select_button">
             <button class="menuButton" data-menu="menu1">記入</button>
             <div id="menu1" class="menu">
-                <a href="mypage/edit/health">健康記録表</a>
-                <a href="mypage/edit/activity">行動記録表</a>
-                <a href="mypage/edit/infection">感染記録表</a>
-                <a href="mypage/edit/vaccine">ワクチン接種記録表</a>
+                <a href="/mypage:{{ User_code }}/edit/health">健康記録表</a>
+                <a href="/mypage:{{ User_code }}/edit/activity">行動記録表</a>
+                <a href="/mypage:{{ User_code }}/edit/infection">感染記録表</a>
+                <a href="/mypage:{{ User_code }}/edit/vaccine">ワクチン接種記録表</a>
             </div>
 
         </div>

@@ -188,7 +188,7 @@ def signup():
             del signup_data["Admin_password"]
             User_code = signup_data["User_code"]
             # DBにユーザーを追加
-            DB.write("basic_information", signup_data)
+            DB.write("users", signup_data)
             del signup_data
             return redirect(f"/fetch:{User_code}")
 
@@ -238,11 +238,11 @@ def mypage(User_code):
 @app.route("/mypage:<User_code>/edit/health", methods=["GET", "POST"])
 def edit_health(User_code):
     if not request.form:
-        return render_template("mypages/subpages/health.html", result=comp_result(False, ))
+        return render_template("mypages/subpages/health.html", result=comp_result(False,User_code))
     else:
         data = form_to_data(request.form)
         DB.write("health", data)
-        return render_template("mypages/subpages/health.html", result=comp_result(True))
+        return render_template("mypages/subpages/health.html", result=comp_result(True,User_code))
 
 
 # 活動記録画面
