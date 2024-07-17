@@ -1,73 +1,165 @@
-#logs-table{
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+	overflow: hidden;
+    max-width: 100%;
+}
+
+body {
+    padding: 25px;
+    background-color: #777777;
+    margin: 20 10;
+    font-family: 'Roboto', sans-serif;
+    max-width: 100%;
+}
+
+.container {
+    margin: 0 auto;
+    border-radius: 6px;
+    background-color: #eafaf8;
+    padding: 20px;
+    max-width: 100%;
+}
+
+#header {
+    background-color: #2ABCA7;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    margin-bottom: 20px;
+
+    h1 {
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+}
+
+#user_info {
+    margin-top: 10px;
+    font-size: 1.1em;
+}
+
+#information {
+    border: 2px solid #2ABCA7;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 8px;
+    max-width: 700px;
+    background-color: #eafaf8;
+
+    h3 {
+        margin-bottom: 10px;
+        font-family: 'Lora', serif;
+        font-weight: bold;
+        color: #2ABCA7;
+    }
+}
+
+#logs-table {
+    margin-top: 20px;
+}
+
+.tab-wrap {
     width: 100%;
 
-    .tab-label:hover{
-        background-color: cornflowerblue;
+    .tab-switch {
+        display: none;
     }
-    .tab-content{
-        width: 100%;
-        margin-top: 5px;
-        height: 315px;
-    }
-    & table{
-        display: block;
-        overflow-y: scroll;
-        /*overflow-x: scroll;*/
-        border-collapse: collapse;
-        width: 100%;
-        height: 100%;
-        border-spacing: 0;
 
-        & th{
-            position: sticky;
-            top: 0;
-            z-index: 1;
-            background: lightblue;
-            border-top:#FFFFFF;
-            text-wrap: nowrap;
+    .tab-label {
+        display: inline-block;
+        padding: 10px 20px;
+        margin-right: 10px;
+        cursor: pointer;
+        background-color: #2ABCA7;
+        color: white;
+        border-radius: 5px 5px 0 0;
+        font-weight: bold;
+
+        &:hover {
+            background-color: #279c8f;
         }
-        & th:before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
+    }
+
+    .tab-content {
+        display: none;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-top: none;
+        background-color: #fff;
+        border-radius: 0 0 5px 5px;
+        max-height: 400px;
+
+        overflow-y: auto;
+
+        table {
             width: 100%;
-            height: 100%;
-            border-top: 1px solid #000;
-            border-bottom: 1px solid #000;
-            background: lightblue;
-            z-index: -1;
-        }
-        & td,th{
-            width: 1000px;
-            text-wrap: nowrap;
-        }
+            border-collapse: collapse;
+            border-spacing: 0;
+            font-family: 'Roboto', sans-serif;
 
+            th,
+            td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+            }
+
+            th {
+                background-color: #2ABCA7;
+                color: white;
+                font-weight: bold;
+            }
+        }
     }
-    & table,th,td{
-        border: 1px solid black;
+
+    .tab-switch:checked + .tab-label {
+        background-color: #fff;
+        color: #2ABCA7;
+        border-bottom: 1px solid white;
+    }
+
+    .tab-switch:checked + .tab-label + .tab-content {
+        display: block;
     }
 }
 
-#information{
-    & legend{
-        & h3{
-            margin-bottom: 0;
-            margin-top: 15px;
-        }
-    }
-}
-
-#header{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    & h1{
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-    & #user_info{
-        text-align: right;
-        margin-right: 30px;
-    }
+#slect_bottan{
+	position: relative;
+	left: 900px;
+	bottom: 100px;
+	.menuButton {
+		padding: 10px 20px;
+		font-size: 16px;
+		cursor: pointer;
+		background-color: #2ABCA7;
+		border: 1px solid #EAFAF8;
+		color: #FAFAFA;
+	}
+	.menu {
+		display: none;
+		position: absolute;
+		background-color: white;
+		border: 1px solid #ddd;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		border-radius: 8px;
+		padding: 10px;
+		margin-top: 5px;
+		width: 150px;
+	}
+	.menu a {
+		display: block;
+		padding: 10px;
+		text-decoration: none;
+		color: #000;
+		border-radius: 5px;
+	}
+	.menu a:hover {
+		background-color: #EAFAF8;
+	}
 }
