@@ -13,6 +13,14 @@
     width: 100%;
     display: none;
 }
+.tab-blank{
+    width: 100%;
+    height: 15px;
+    border-right:1px solid #ddd;
+    border-left:1px solid #ddd;
+    background-color: #fff;
+    display: none;
+}
 /* アクティブなタブ */
 .tab-switch:checked+.tab-label {
     background: DeepSkyBlue;
@@ -20,6 +28,10 @@
 .tab-switch:checked+.tab-label+.tab-content {
     display: block;
 }
+.tab-switch:checked+.tab-label+.tab-blank {
+    display: block;
+}
+
 /* ラジオボタン非表示 */
 .tab-switch {
     display: none;
