@@ -38,103 +38,6 @@ def goto_error(title, desc):
     return redirect("/error")
 
 
-# 数字・文字列の1,0をT/Fに変える関数
-def num_conv_tf(num):
-    return True if (num == "1" or num == 1) else False
-
-
-# DBの1とか0とかを任意の文字に変えるやつ
-def replace_df_values(df, true_word='true_word', false_word='false_word', nan_word='nan_word'):
-    # "0"をfalse_wordに置換
-    df.replace(0, false_word, inplace=True)
-    # "1"をtrue_wordに置換
-    df.replace(1, true_word, inplace=True)
-    # NaNをnan_wordに置換
-    df.replace("nan", nan_word, inplace=True)
-    # 空白をnan_wordに置換
-    df.replace("", nan_word, inplace=True)
-    return df
-
-
-# ユーザーデータ、健康管理表、行動管理表のデータをまとめた、
-# main_dataを作る関数
-def create_main_data(User_code):
-    if DB.check_exist_primal(User_code):
-        user_data_sql = f"""
-                            select * from users 
-                                where User_code = '{User_code}';
-                            """
-        health_data_sql = f"""
-                            select * from health
-                                where User_code = '{User_code}' 
-                                AND Updated >= NOW() - INTERVAL 7 DAY
-                                ORDER BY Updated DESC; 
-                            """
-        activity_data_sql = f"""
-                            select * from activity
-                                where User_code = '{User_code}' 
-                                AND Updated >= NOW() - INTERVAL 7 DAY
-                                ORDER BY Updated DESC;
-                            """
-        infection_data_sql = f"""
-                            select * from infection
-                                where User_code = '{User_code}'                                
-                                AND Infection_stop >= NOW() - INTERVAL 1 YEAR
-                                ORDER BY Infection_stop DESC;
-                            """
-
-        vaccine_data_sql = f"""
-                            select * from vaccine
-                                where User_code = '{User_code}'
-                                AND vaccine_date >= NOW() - INTERVAL 1 YEAR
-                                ORDER BY vaccine_date DESC;
-                            """
-
-        user_data = DB.read(user_data_sql)
-        health_data = DB.read(health_data_sql)
-        activity_data = DB.read(activity_data_sql)
-        infection_data = DB.read(infection_data_sql)
-        vaccine_data = DB.read(vaccine_data_sql)
-
-        del health_data["User_code"]
-        del health_data["Health_ID"]
-
-        health_data = replace_df_values(health_data, "あり", "なし", "未記入")
-
-        del activity_data["User_code"]
-        del activity_data["Activity_ID"]
-        del activity_data["Is_companions"]
-
-        activity_data = replace_df_values(activity_data, "あり", "なし", "未記入")
-
-        del infection_data["User_code"]
-
-        infection_data = replace_df_values(infection_data, "はい", "いいえ", "未記入")
-
-        del vaccine_data["User_code"]
-        del vaccine_data["vaccine_ID"]
-
-        vaccine_data = replace_df_values(vaccine_data, "", "", "未記入")
-
-        return user_data, health_data, activity_data, infection_data, vaccine_data
-    else:
-        raise Exception("データベースにユーザーが見つからない")
-
-
-# request.formから現在時刻、User_codeを追加したdictを返す
-def form_to_data(form, is_updated=True):
-    form_dict = form.to_dict()
-    # 現在時刻を取得
-    now = datetime.now()
-    # MySQLのTIMESTAMP形式にフォーマット
-    updated = now.strftime('%Y-%m-%d %H:%M:%S')
-
-    form_dict["User_code"] = session["user_data"]["User_code"][0]
-    if is_updated:
-        form_dict["Updated"] = updated
-
-    return form_dict
-
 
 # ルート画面。
 # 今はテスト画面を表示してるけど、そのうちsigninにリダイレクトする予定
@@ -207,7 +110,8 @@ def fetch_data(User_code):
      health_data,
      activity_data,
      infection_data,
-     vaccine_data
+     vaccine_data,
+
      ) = create_main_data(User_code)
     session["user_data"] = user_data
     session["health_data"] = health_data.values
@@ -216,7 +120,6 @@ def fetch_data(User_code):
     session["vaccine_data"] = vaccine_data.values
 
     # if num_conv_tf(session["user_data"]["Admin_rights"][0]):
-
     return redirect(f"/mypage:{User_code}")
 
 
@@ -332,8 +235,6 @@ def edit_infection(User_code):
     if not request.form:
         return render_template("mypages/subpages/infection.html", result=comp_result(False, User_code))
     else:
-        data = form_to_data(request.form, False)
-        DB.write("infection", data)
     return render_template("mypages/subpages/infection.html", result=comp_result(True, User_code))
 
 
