@@ -425,8 +425,8 @@ def edit_infection(User_code):
         return render_template("mypages/subpages/infection.html", result=comp_result(False, User_code))
     else:
         data = form_to_data(request.form, False)
-        DB.write("infection", data)
-    return render_template("mypages/subpages/infection.html", result=comp_result(True, User_code))
+        DB.update("infection", data)
+        return render_template("mypages/subpages/infection.html", result=comp_result(True, User_code))
 
 
 # ワクチン接種記録画面

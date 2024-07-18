@@ -34,7 +34,21 @@ class MyDatabase:
             sql = f"INSERT INTO {table_name} ({columns}) VALUES ({row_values})"
             self._execute_query(sql)
             self.dbcon.commit()
+        except mydb.Error as e:
+            print("書き込みエラー", e)
+            sys.exit()
 
+    def update(self, table_name, data):
+        try:
+            # カラム名と値を準備
+            update_values = ", ".join([f"{key} = '{str(value)}'" if isinstance(value, str) else f"{key} = {value}" for key, value in data.items()])
+
+            # UPDATE文の構築
+            sql = f"UPDATE {table_name} SET {update_values} WHERE User_code = '{data['User_code']}'"  # 例えば、User_code を条件とする
+
+            # クエリの実行
+            self._execute_query(sql)
+            self.dbcon.commit()
         except mydb.Error as e:
             print("書き込みエラー", e)
             sys.exit()
