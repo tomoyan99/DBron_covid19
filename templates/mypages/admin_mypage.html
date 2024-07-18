@@ -25,17 +25,18 @@
         <fieldset id="information">
             <legend><h3>お知らせ！</h3></legend>
             {% if not is_completed_health %}
-                <p id="is_completed_health">☆☆☆今日の健康記録を入力してください☆☆☆  >> <a href="mypage:{{ User_code }}/edit/health">入力する</a></p>
+                <p id="is_completed_health">☆☆☆今日の健康記録を入力してください☆☆☆  >> <a href="/mypage:{{ User_code }}/edit/health">入力する</a></p>
             {% endif %}
 
             {% if not is_completed_activity %}
-                <p id="is_completed_activity">☆☆☆今日の行動記録を入力してください☆☆☆  >> <a href="mypage:{{ User_code }}/edit/activity">入力する</a></p>
+                <p id="is_completed_activity">☆☆☆今日の行動記録を入力してください☆☆☆  >> <a href="/mypage:{{ User_code }}/edit/activity">入力する</a></p>
             {% endif %}
 
             {% if ( is_completed_health and is_completed_activity) %}
                 <p>☆☆☆お知らせはありません☆☆☆</p>
             {% endif %}
         </fieldset>
+    <div id="controller">
         <div id="select_button">
             <button class="menuButton" data-menu="menu1">記入</button>
             <div id="menu1" class="menu">
@@ -55,6 +56,8 @@
                 ログアウト
             </button>
         </div>
+        <div id="filter"></div>
+    </div>
     </div>
     <div id="logs-table">
         <div class="tab-wrap">
@@ -96,6 +99,7 @@
                     </tbody>
                 </table>
             </div>
+
             <input id="activity-tab" type="radio" name="TAB" class="tab-switch" />
             <label class="tab-label" for="activity-tab">行動記録表</label>
             <div class="tab-blank"></div>
@@ -125,6 +129,7 @@
                     </tbody>
                 </table>
             </div>
+
             <input id="infection-tab" type="radio" name="TAB" class="tab-switch" />
             <label class="tab-label" for="infection-tab">感染記録表</label>
             <div class="tab-blank"></div>
@@ -150,6 +155,7 @@
                     </tbody>
                 </table>
             </div>
+
             <input id="vaccine-tab" type="radio" name="TAB" class="tab-switch" />
             <label class="tab-label" for="vaccine-tab">ワクチン接種記録表</label>
             <div class="tab-blank"></div>
@@ -172,6 +178,61 @@
                     </tbody>
                 </table>
             </div>
+
+            <input id="infected-tab" type="radio" name="TAB" class="tab-switch" />
+            <label class="tab-label" for="infected-tab">感染者一覧</label>
+            <div class="tab-blank"></div>
+            <div class="tab-content">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>学籍番号</th>
+                        <th>氏名</th>
+                        <th>発症日</th>
+                        <th>出席可能日</th>
+                        <th>病院名</th>
+                        <th>医師名</th>
+                        <th>ワクチン接種有無</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in infected_data %}
+                        <tr>
+                            {% for cell in row %}
+                                <td>{{ cell }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <input id="pre-infected-tab" type="radio" name="TAB" class="tab-switch" />
+            <label class="tab-label" for="pre-infected-tab">感染の疑いがある人</label>
+            <div class="tab-blank"></div>
+            <div class="tab-content">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>学籍番号</th>
+                        <th>氏名</th>
+                        <th>ワクチン接種有無</th>
+                        <th>体温</th>
+                        <th>症状数</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in pre_infected_data %}
+                        <tr>
+                            {% for cell in row %}
+                                <td>{{ cell }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     </div>
 </div>
