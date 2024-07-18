@@ -79,18 +79,10 @@ body {
             width: fit-content;
             align-content: center;
             margin-left: auto;
-            .logoutButton{
-                padding: 13px 5px;
-                font-size: 1.8em;
-                cursor: pointer;
-                background-color: var(--theme-color);
-                border: 1px solid #EAFAF8;
-                border-radius: 10px;
-                color: #FAFAFA;
-            }
+            margin-bottom: 5px;
             .menuButton {
                 padding: 10px 20px;
-                font-size: 2em;
+                font-size: 1.5em;
                 cursor: pointer;
                 background-color: var(--theme-color);
                 border: 1px solid var(--theme-hover);
@@ -130,6 +122,62 @@ body {
                 background-color: #EAFAF8;
             }
         }
+        #filter{
+            position: relative;
+            width: fit-content;
+            align-content: center;
+            margin-left: auto;
+            display: flex;
+            input{
+                font-size: 1.2em;
+                width: fit-content;
+                max-width: 6em;
+                text-align: center;
+            }
+            .menuButton {
+                padding: 10px 20px;
+                font-size: 1.5em;
+                cursor: pointer;
+                background-color: var(--theme-color);
+                border: 1px solid var(--theme-hover);
+                color: #FAFAFA;
+            }
+            .menuButton:hover , .logoutButton:hover{
+                background-color: var(--theme-hover);
+            }
+
+            .menuButton:active , .logoutButton:active{
+                background-color: var(--theme-hover);
+                transform: scale(0.95);
+            }
+            .menu {
+                display: none;
+                position: absolute;
+                right: 0;
+                top: 100%;
+                max-height: 200px;
+                background-color: white;
+                border: 1px solid #ddd;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+                padding: 20px;
+                width: 250px;
+                z-index: 80;
+                overflow-y: auto;
+            }
+            .menu a {
+                display: block;
+                padding: 10px;
+                text-decoration: none;
+                color: #000;
+                border-radius: 5px;
+                font-size: 1.2em;
+            }
+            .menu a:hover {
+                background-color: #EAFAF8;
+            }
+        }
+
     }
 }
 

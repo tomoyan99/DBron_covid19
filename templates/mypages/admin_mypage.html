@@ -52,11 +52,22 @@
                 <a href="/mypage:{{ User_code }}/edit/update">テーブル追加</a>
                 <a href="/mypage:{{ User_code }}/edit/delete">テーブル削除</a>
             </div>
-            <button class="logoutButton" onclick="location.href = '/mypage:{{ User_code }}/logout'">
+            <button class="menuButton" onclick="location.href = '/mypage:{{ User_code }}/logout'">
                 ログアウト
             </button>
         </div>
-        <div id="filter"></div>
+        <div id="filter">
+            <input type="text" readonly value="{{ session["target_data"]["User_code"][0] }}"/>
+            <button id="filtter" class="menuButton" data-menu="menu3">🔍</button>
+            <div id="menu3" class="menu">
+                <div class="form-group">
+                    <label for="selectOption">学籍番号</label>
+                    {% for member in members_list %}
+                        <a href="/fetch:{{ session["user_data"]["User_code"][0]}}" value="{{ member }}" class="a_members">{{ member }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
     </div>
     <div id="logs-table">
@@ -258,6 +269,27 @@
             }
         });
     });
+    document.addEventListener("DOMContentLoaded",()=>{
+        const a_members = document.querySelectorAll("a.a_members");
+        a_members.forEach((a_member)=>{
+            a_member.addEventListener("click",(e)=>{
+                e.preventDefault();
+                const value = e.target.innerText;
+                const form = document.createElement('form');
+                form.method = 'POST'; // or 'GET' depending on your needs
+                form.action = '/fetch:{{ session["user_data"]["User_code"][0] }}'; // replace with your server endpoint URL
+
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'filter_select';
+                input.value = value;
+                form.appendChild(input);
+
+                document.body.appendChild(form);
+                form.submit();
+            })
+        })
+    })
 </script>
 </div>
 </body>

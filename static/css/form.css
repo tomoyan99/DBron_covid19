@@ -10,6 +10,7 @@ body {
 .container {
     max-width: 600px;
     max-height: 94vh;
+    min-width: 300px;
     margin: 0 auto;
     text-align: center;
     border-radius: 8px;
@@ -19,6 +20,9 @@ body {
         border-radius: 8px 0 0 0;
         background-color: #2ABCA7;
         color: #FAFAFA;
+    }
+    h1{
+        margin-top: 0;
     }
 
     h2 {

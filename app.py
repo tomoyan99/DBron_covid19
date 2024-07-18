@@ -58,66 +58,66 @@ def num_conv_tf(num):
 # ユーザーデータ、健康管理表、行動管理表のデータをまとめた、
 # main_dataを作る関数
 def create_main_data(User_code):
-    if DB.check_exist_primal(User_code):
-        user_data_sql = f"""
-                            select * from users 
-                                where User_code = '{User_code}';
-                            """
-        health_data_sql = f"""
-                            select * from health
-                                where User_code = '{User_code}' 
-                                AND Updated >= NOW() - INTERVAL 7 DAY
-                                ORDER BY Updated DESC; 
-                            """
-        activity_data_sql = f"""
-                            select * from activity
-                                where User_code = '{User_code}' 
-                                AND Updated >= NOW() - INTERVAL 7 DAY
-                                ORDER BY Updated DESC;
-                            """
-        infection_data_sql = f"""
-                            select * from infection
-                                where User_code = '{User_code}'                                
-                                AND Infection_stop >= NOW() - INTERVAL 1 YEAR
-                                ORDER BY Infection_stop DESC;
-                            """
+        if DB.check_exist_primal(User_code):
+            user_data_sql = f"""
+                                select * from users 
+                                    where User_code = '{User_code}';
+                                """
+            health_data_sql = f"""
+                                select * from health
+                                    where User_code = '{User_code}' 
+                                    AND Updated >= NOW() - INTERVAL 7 DAY
+                                    ORDER BY Updated DESC; 
+                                """
+            activity_data_sql = f"""
+                                select * from activity
+                                    where User_code = '{User_code}' 
+                                    AND Updated >= NOW() - INTERVAL 7 DAY
+                                    ORDER BY Updated DESC;
+                                """
+            infection_data_sql = f"""
+                                select * from infection
+                                    where User_code = '{User_code}'                                
+                                    AND Infection_stop >= NOW() - INTERVAL 1 YEAR
+                                    ORDER BY Infection_stop DESC;
+                                """
 
-        vaccine_data_sql = f"""
-                            select * from vaccine
-                                where User_code = '{User_code}'
-                                AND vaccine_date >= NOW() - INTERVAL 1 YEAR
-                                ORDER BY vaccine_date DESC;
-                            """
+            vaccine_data_sql = f"""
+                                select * from vaccine
+                                    where User_code = '{User_code}'
+                                    AND vaccine_date >= NOW() - INTERVAL 1 YEAR
+                                    ORDER BY vaccine_date DESC;
+                                """
 
-        user_data = DB.read(user_data_sql)
-        health_data = DB.read(health_data_sql)
-        activity_data = DB.read(activity_data_sql)
-        infection_data = DB.read(infection_data_sql)
-        vaccine_data = DB.read(vaccine_data_sql)
+            user_data = DB.read(user_data_sql)
+            health_data = DB.read(health_data_sql)
+            activity_data = DB.read(activity_data_sql)
+            infection_data = DB.read(infection_data_sql)
+            vaccine_data = DB.read(vaccine_data_sql)
 
-        del health_data["User_code"]
-        del health_data["Health_ID"]
+            del health_data["User_code"]
+            del health_data["Health_ID"]
 
-        health_data = replace_df_values(health_data, "あり", "なし", "未記入")
+            health_data = replace_df_values(health_data, "あり", "なし", "未記入")
 
-        del activity_data["User_code"]
-        del activity_data["Activity_ID"]
-        del activity_data["Is_companions"]
+            del activity_data["User_code"]
+            del activity_data["Activity_ID"]
+            del activity_data["Is_companions"]
 
-        activity_data = replace_df_values(activity_data, "あり", "なし", "未記入")
+            activity_data = replace_df_values(activity_data, "あり", "なし", "未記入")
 
-        del infection_data["User_code"]
+            del infection_data["User_code"]
 
-        infection_data = replace_df_values(infection_data, "はい", "いいえ", "未記入")
+            infection_data = replace_df_values(infection_data, "はい", "いいえ", "未記入")
 
-        del vaccine_data["User_code"]
-        del vaccine_data["vaccine_ID"]
+            del vaccine_data["User_code"]
+            del vaccine_data["vaccine_ID"]
 
-        vaccine_data = replace_df_values(vaccine_data, "", "", "未記入")
+            vaccine_data = replace_df_values(vaccine_data, "", "", "未記入")
 
-        return user_data, health_data, activity_data, infection_data, vaccine_data
-    else:
-        raise Exception("データベースにユーザーが見つからない")
+            return user_data, health_data, activity_data, infection_data, vaccine_data
+        else:
+            return goto_error("ユーザーエラー","データベースにユーザーが見つかりませんでした")
 
 
 def create_admin_data():
@@ -213,8 +213,8 @@ def home():
     else:
         return goto_error("データベースエラー", "データベースに接続できませんでした")
     print(get_members_list())
-    return redirect('/test')
-    # return redirect('/login')
+    # return redirect('/test')
+    return redirect('/login')
 
 
 @app.route("/test")
@@ -266,8 +266,11 @@ def signup():
             return redirect(f"/fetch:{User_code}")
 
 
-@app.route("/fetch:<User_code>")
+@app.route("/fetch:<User_code>",methods=["GET","POST"])
 def fetch_data(User_code):
+    if request.form:
+        User_code = request.form.get("filter_select")
+        print(User_code)
     # ユーザごとの情報をだけを抽出
     (user_data,
      health_data,
@@ -289,7 +292,7 @@ def fetch_data(User_code):
 
     is_admin = num_conv_tf(session["user_data"]["Admin_rights"][0])
     if is_admin:
-        return redirect(f"/fetch:{User_code}/admin")
+        return redirect(f"/fetch:{session["user_data"]["User_code"][0]}/admin")
     else:
         return redirect(f"/mypage:{User_code}")
 
