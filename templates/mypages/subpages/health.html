@@ -6,113 +6,113 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
 </head>
 <body>
-    {% if result %}
-        {{result | safe}}
-    {% endif %}
-    <div class="container">
-        <div class="head">
-            <h2>健康状態入力フォーム</h2>
-        </div>
-        <form action="#" method="post">
-            <table>
-                <tr>
-                    <td>体温:</td>
-                    <td><input type="number" step="0.1" name="Temperature" min="30" max="45" required></td>
-                </tr>
-                <tr>
-                    <td>関節・筋肉痛:</td>
-                    <td>
-                        <label>
-                            はい<input type="radio" name="Kinniku_pain" value="1">
-                            いいえ<input type="radio" name="Kinniku_pain" value="0" checked>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>だるさ:</td>
-                    <td>
-                        <label>
-                            <input type="radio" name="Darusa" value="1"> はい
-                            <input type="radio" name="Darusa" value="0" checked> いいえ
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>頭痛:</td>
-                    <td>
-                        <label>
-                            <input type="radio" name="Atama_ita" value="1"> はい
-                            <input type="radio" name="Atama_ita" value="0" checked> いいえ
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>咽頭痛:</td>
-                    <td>
-                        <label>
-                            <input type="radio" name="Nodo_ita" value="1"> はい
-                            <input type="radio" name="Nodo_ita" value="0" checked> いいえ
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>息苦しさ:</td>
-                    <td>
-                        <label>
-                            <input type="radio" name="Iki_gire" value="1"> はい
-                            <input type="radio" name="Iki_gire" value="0" checked> いいえ
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>咳・くしゃみ:</td>
-                    <td>
-                        <label>
-                            <input type="radio" name="Seki_kusyami" value="1"> はい
-                            <input type="radio" name="Seki_kusyami" value="0" checked> いいえ
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>吐気・嘔吐:</td>
-                    <td>
-                        <label>
-                            <input type="radio" name="Hakike" value="1"> はい
-                            <input type="radio" name="Hakike" value="0" checked> いいえ
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>腹痛・下痢:</td>
-                    <td>
-                        <label>
-                            <input type="radio" name="Haraita" value="1"> はい
-                            <input type="radio" name="Haraita" value="0" checked> いいえ
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>味覚障害:</td>
-                    <td>
-                        <label>
-                            <input type="radio" name="Mikaku" value="1"> はい
-                            <input type="radio" name="Mikaku" value="0" checked> いいえ
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>臭覚障害:</td>
-                    <td>
-                        <label>
-                            <input type="radio" name="Kyukaku" value="1"> はい
-                            <input type="radio" name="Kyukaku" value="0" checked> いいえ
-                        </label>
-                    </td>
-                </tr>
-            </table>
-            <button type="reset">消去</button>
-            <button type="submit">送信</button>
-        </form>
+{% if result %}
+    {{result | safe}}
+{% endif %}
+<div class="container">
+    <div class="head">
+        <h2>健康状態入力フォーム</h2>
     </div>
+    <form action="#" method="post">
+        <table>
+            <tr>
+                <td>体温:</td>
+                <td><input type="number" step="0.1" name="Temperature" min="30" max="45" required></td>
+            </tr>
+            <tr>
+                <td>関節・筋肉痛:</td>
+                <td>
+                    <label>
+                        <input type="radio" name="Kinniku_pain" value="1"> はい
+                        <input type="radio" name="Kinniku_pain" value="0" checked> いいえ
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>だるさ:</td>
+                <td>
+                    <label>
+                        <input type="radio" name="Darusa" value="1"> はい
+                        <input type="radio" name="Darusa" value="0" checked> いいえ
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>頭痛:</td>
+                <td>
+                    <label>
+                        <input type="radio" name="Atama_ita" value="1"> はい
+                        <input type="radio" name="Atama_ita" value="0" checked> いいえ
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>咽頭痛:</td>
+                <td>
+                    <label>
+                        <input type="radio" name="Nodo_ita" value="1"> はい
+                        <input type="radio" name="Nodo_ita" value="0" checked> いいえ
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>息苦しさ:</td>
+                <td>
+                    <label>
+                        <input type="radio" name="Iki_gire" value="1"> はい
+                        <input type="radio" name="Iki_gire" value="0" checked> いいえ
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>咳・くしゃみ:</td>
+                <td>
+                    <label>
+                        <input type="radio" name="Seki_kusyami" value="1"> はい
+                        <input type="radio" name="Seki_kusyami" value="0" checked> いいえ
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>吐気・嘔吐:</td>
+                <td>
+                    <label>
+                        <input type="radio" name="Hakike" value="1"> はい
+                        <input type="radio" name="Hakike" value="0" checked> いいえ
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>腹痛・下痢:</td>
+                <td>
+                    <label>
+                        <input type="radio" name="Haraita" value="1"> はい
+                        <input type="radio" name="Haraita" value="0" checked> いいえ
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>味覚障害:</td>
+                <td>
+                    <label>
+                        <input type="radio" name="Mikaku" value="1"> はい
+                        <input type="radio" name="Mikaku" value="0" checked> いいえ
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>臭覚障害:</td>
+                <td>
+                    <label>
+                        <input type="radio" name="Kyukaku" value="1"> はい
+                        <input type="radio" name="Kyukaku" value="0" checked> いいえ
+                    </label>
+                </td>
+            </tr>
+        </table>
+        <button type="reset">消去</button>
+        <button type="submit">送信</button>
+    </form>
+</div>
 </body>
 </html>
