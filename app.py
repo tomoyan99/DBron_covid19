@@ -8,6 +8,7 @@ from flask import Flask, render_template, session, request, redirect, abort
 
 from modules.MyDatabase import MyDatabase
 from flask_session import Session
+from modules.User import User
 from modules.components.logout import comp_logout
 from modules.components.result import comp_result
 from datetime import datetime
@@ -97,8 +98,7 @@ def signup():
             # signup_dataからAdmin_passwordプロパティの削除
             del signup_data["Admin_password"]
             User_code = signup_data["User_code"]
-            # DBにユーザーを追加
-            DB.write("users", signup_data)
+            session["login_user"]= User(User_code,DB,signup_data)
             del signup_data
             return redirect(f"/fetch:{User_code}")
 
@@ -106,18 +106,7 @@ def signup():
 @app.route("/fetch:<User_code>", methods=["GET", "POST"])
 def fetch_data(User_code):
     # ユーザごとの情報をだけを抽出
-    (user_data,
-     health_data,
-     activity_data,
-     infection_data,
-     vaccine_data,
-
-     ) = create_main_data(User_code)
-    session["user_data"] = user_data
-    session["health_data"] = health_data.values
-    session["activity_data"] = activity_data.values
-    session["infection_data"] = infection_data.values
-    session["vaccine_data"] = vaccine_data.values
+    session["login_user"].fetch_data()
 
     # if num_conv_tf(session["user_data"]["Admin_rights"][0]):
     return redirect(f"/mypage:{User_code}")

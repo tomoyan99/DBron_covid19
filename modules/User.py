@@ -5,7 +5,7 @@ from modules.utils import replace_df_values
 
 
 class User:
-    def __init__(self, User_code:str, DB:MyDatabase):
+    def __init__(self, User_code:str, DB:MyDatabase,data):
         self.vaccine_data = None
         self.infection_data = None
         self.health_data = None
@@ -15,7 +15,9 @@ class User:
         self.DB = DB
         if self.DB.check_exist_primal(self.User_code):
             self.fetch_data()
-        else:
+        elif data:
+            self.user_data = data
+            self.make_user(data)
 
     def fetch_data(self):
         # DBからデータを取得するロジックを実装
@@ -95,6 +97,10 @@ class User:
 
         return form_dict
 
-    def write_db(self,):
-        data = form_to_data(request.form, False)
-        DB.write("infection", data)
+    def make_user(self,data):
+        # DBにユーザーを追加
+        self.DB.write("users", data)
+
+    def write_db(self,table_name,form,is_updated):
+        data = self.form_to_data(form,is_updated)
+        self.DB.write(table_name, data)
