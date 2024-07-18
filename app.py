@@ -425,7 +425,10 @@ def edit_infection(User_code):
         return render_template("mypages/subpages/infection.html", result=comp_result(False, User_code))
     else:
         data = form_to_data(request.form, False)
-        DB.update("infection", data)
+        if session["infection_data"][0] :
+            DB.update("infection", data)
+        else:
+            DB.write("infection", data)
         return render_template("mypages/subpages/infection.html", result=comp_result(True, User_code))
 
 
