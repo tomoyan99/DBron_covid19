@@ -50,6 +50,8 @@ def replace_df_values(df, true_word='true_word', false_word='false_word', nan_wo
     df.replace("", nan_word, inplace=True)
     return df
 
+def num_conv_tf(num):
+    return num == 1 or num == "1"
 
 # ユーザーデータ、健康管理表、行動管理表のデータをまとめた、
 # main_dataを作る関数
@@ -114,6 +116,12 @@ def create_main_data(User_code):
         return user_data, health_data, activity_data, infection_data, vaccine_data
     else:
         raise Exception("データベースにユーザーが見つからない")
+
+def create_admin_data():
+    infected_sql = """
+                select * from infection
+                where
+    """
 
 def get_members_list():
     members_sql = f"""
@@ -221,7 +229,20 @@ def fetch_data(User_code):
     session["activity_data"] = activity_data.values
     session["infection_data"] = infection_data.values
     session["vaccine_data"] = vaccine_data.values
-    return redirect(f"/mypage:{User_code}")
+
+    is_admin = num_conv_tf(session["user_data"]["Admin_rights"][0])
+    if  is_admin:
+        return redirect(f"/fetch:{User_code}/admin")
+    else:
+        return redirect(f"/mypage:{User_code}")
+
+@app.route("/fetch:<User_code>/admin")
+def fetch_data_admin(User_code):
+
+
+
+# @app.route("/filter:<User_code>",methods=["POST"])
+# def filter_data():
 
 
 # マイページ画面
