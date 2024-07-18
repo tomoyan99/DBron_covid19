@@ -57,13 +57,13 @@ body {
     font-size: 1.1em;
 }
 #body{
-    width: 100%;
     display: flex;
+
     #information {
         border: 2px solid var(--theme-color);
         padding: 15px;
         border-radius: 8px;
-        width: 100%;
+        width: 50%;
         min-height: 120px;
         background-color: #eafaf8;
         margin-bottom: 10px;
@@ -73,67 +73,60 @@ body {
             color: var(--theme-color);
         }
     }
-    #controller{
-        width: 100%;
-        display: block;
-        #select_button{
-            position: relative;
-            width: fit-content;
-            align-content: center;
-            margin-left: auto;
-            .logoutButton{
-                padding: 13px 5px;
-                font-size: 1.8em;
-                cursor: pointer;
-                background-color: var(--theme-color);
-                border: 1px solid #EAFAF8;
-                border-radius: 10px;
-                color: #FAFAFA;
-            }
-            .menuButton {
-                padding: 10px 20px;
-                font-size: 2em;
-                cursor: pointer;
-                background-color: var(--theme-color);
-                border: 1px solid var(--theme-hover);
-                border-radius: 10px;
-                color: #FAFAFA;
-            }
-            .menuButton:hover , .logoutButton:hover{
-                background-color: var(--theme-hover);
-            }
-
-            .menuButton:active , .logoutButton:active{
-                background-color: var(--theme-hover);
-                transform: scale(0.95);
-            }
-            .menu {
-                display: none;
-                position: absolute;
-                right: 0;
-                left: 0;
-                background-color: white;
-                border: 1px solid #ddd;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-                border-radius: 8px;
-                padding: 20px;
-                width: 250px;
-                z-index: 80;
-            }
-            .menu a {
-                display: block;
-                padding: 10px;
-                text-decoration: none;
-                color: #000;
-                border-radius: 5px;
-                font-size: 1.2em;
-            }
-            .menu a:hover {
-                background-color: #EAFAF8;
-            }
+    #select_button{
+        position: relative;
+        width: fit-content;
+        align-content: center;
+        margin-left: auto;
+        .logoutButton{
+            padding: 13px 5px;
+            font-size: 1.8em;
+            cursor: pointer;
+            background-color: var(--theme-color);
+            border: 1px solid #EAFAF8;
+            border-radius: 10px;
+            color: #FAFAFA;
         }
-        #fileter{
+        .menuButton {
+            padding: 10px 20px;
+            font-size: 2em;
+            cursor: pointer;
+            background-color: var(--theme-color);
+            border: 1px solid var(--theme-hover);
+            border-radius: 10px;
+            color: #FAFAFA;
+        }
+        .menuButton:hover , .logoutButton:hover{
+            background-color: var(--theme-hover);
+        }
 
+        .menuButton:active , .logoutButton:active{
+            background-color: var(--theme-hover);
+            transform: scale(0.95);
+        }
+        .menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            left: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            width: 250px;
+            z-index: 80;
+        }
+        .menu a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: #000;
+            border-radius: 5px;
+            font-size: 1.2em;
+        }
+        .menu a:hover {
+            background-color: #EAFAF8;
         }
     }
 }

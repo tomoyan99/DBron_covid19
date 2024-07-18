@@ -38,11 +38,6 @@ def goto_error(title, desc):
     return redirect("/error")
 
 
-# 数字・文字列の1,0をT/Fに変える関数
-def num_conv_tf(num):
-    return True if (num == "1" or num == 1) else False
-
-
 # DBの1とか0とかを任意の文字に変えるやつ
 def replace_df_values(df, true_word='true_word', false_word='false_word', nan_word='nan_word'):
     # "0"をfalse_wordに置換
@@ -122,7 +117,7 @@ def create_main_data(User_code):
 
 
 # request.formから現在時刻、User_codeを追加したdictを返す
-def form_to_data(form, is_updated=True):
+def form_to_data(form,is_updated=True):
     form_dict = form.to_dict()
     # 現在時刻を取得
     now = datetime.now()
@@ -200,7 +195,7 @@ def signup():
             return redirect(f"/fetch:{User_code}")
 
 
-@app.route("/fetch:<User_code>", methods=["GET", "POST"])
+@app.route("/fetch:<User_code>")
 def fetch_data(User_code):
     # ユーザごとの情報をだけを抽出
     (user_data,
@@ -214,9 +209,6 @@ def fetch_data(User_code):
     session["activity_data"] = activity_data.values
     session["infection_data"] = infection_data.values
     session["vaccine_data"] = vaccine_data.values
-
-    # if num_conv_tf(session["user_data"]["Admin_rights"][0]):
-
     return redirect(f"/mypage:{User_code}")
 
 
@@ -287,7 +279,7 @@ def logout(User_code):
                                vaccine_data=session["vaccine_data"],
                                is_completed_health=is_completed_health,
                                is_completed_activity=is_completed_activity,
-                               logout=comp_logout(True, User_code)
+                               logout=comp_logout(True,User_code)
                                )
     else:
         return render_template("/mypages/mypage.html",
@@ -300,9 +292,8 @@ def logout(User_code):
                                vaccine_data=session["vaccine_data"],
                                is_completed_health=is_completed_health,
                                is_completed_activity=is_completed_activity,
-                               logout=comp_logout(True, User_code)
+                               logout=comp_logout(True,User_code)
                                )
-
 
 # 健康記録画面
 @app.route("/mypage:<User_code>/edit/health", methods=["GET", "POST"])
@@ -332,7 +323,7 @@ def edit_infection(User_code):
     if not request.form:
         return render_template("mypages/subpages/infection.html", result=comp_result(False, User_code))
     else:
-        data = form_to_data(request.form, False)
+        data = form_to_data(request.form,False)
         DB.write("infection", data)
     return render_template("mypages/subpages/infection.html", result=comp_result(True, User_code))
 
@@ -343,7 +334,7 @@ def edit_vaccine(User_code):
     if not request.form:
         return render_template("mypages/subpages/vaccine.html", result=comp_result(False, User_code))
     else:
-        data = form_to_data(request.form, False)
+        data = form_to_data(request.form,False)
         DB.write("vaccine", data)
     return render_template("mypages/subpages/vaccine.html", result=comp_result(True, User_code))
 
