@@ -50,8 +50,10 @@ def replace_df_values(df, true_word='true_word', false_word='false_word', nan_wo
     df.replace("", nan_word, inplace=True)
     return df
 
+
 def num_conv_tf(num):
     return num == 1 or num == "1"
+
 
 # ユーザーデータ、健康管理表、行動管理表のデータをまとめた、
 # main_dataを作る関数
@@ -117,11 +119,65 @@ def create_main_data(User_code):
     else:
         raise Exception("データベースにユーザーが見つからない")
 
+
 def create_admin_data():
     infected_sql = """
-                select * from infection
-                where
+    SELECT 
+    v.User_code AS 学籍番号,
+    u.User_name AS 氏名,
+    i.Infection_start AS 発症日,
+    i.Infection_stop AS 出席可能日,
+    i.medical_name AS 病院名,
+    i.doctor_name AS 医師名,
+    CASE 
+        WHEN v.User_code IS NOT NULL THEN '接種済み'
+        ELSE '未接種'
+    END AS ワクチン接種有無
+    FROM 
+        infection i
+    LEFT JOIN 
+        vaccine v ON i.User_code = v.User_code
+    LEFT JOIN 
+        users u ON i.User_code = u.User_code
+    ORDER BY 
+        u.User_name, i.Infection_start;    
     """
+
+    pre_infected_sql = """
+    SELECT 
+    u.User_code AS 学籍番号,
+    u.User_name AS 氏名,
+    CASE 
+        WHEN v.User_code IS NOT NULL THEN '接種済み'
+        ELSE '未接種'
+    END AS ワクチン接種有無,
+    h.Temperature AS 体温,
+    (IF(h.Kinniku_pain = TRUE, 1, 0) + 
+     IF(h.Darusa = TRUE, 1, 0) + 
+     IF(h.Atama_ita = TRUE, 1, 0) + 
+     IF(h.Nodo_ita = TRUE, 1, 0) + 
+     IF(h.Iki_gire = TRUE, 1, 0) + 
+     IF(h.Seki_kusyami = TRUE, 1, 0) + 
+     IF(h.Hakike = TRUE, 1, 0) + 
+     IF(h.Haraita = TRUE, 1, 0) + 
+     IF(h.Mikaku = TRUE, 1, 0) + 
+     IF(h.Kyukaku = TRUE, 1, 0)) AS 症状数
+    FROM 
+        users u
+    JOIN 
+        health h ON u.User_code = h.User_code
+    LEFT JOIN 
+        vaccine v ON u.User_code = v.User_code AND v.vaccine_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+    WHERE 
+         h.Temperature >= 37.5 ;
+    """
+    infected = DB.read(infected_sql)
+    pre_infected = DB.read(pre_infected_sql)
+    infected = replace_df_values(infected, "はい", "いいえ", "未記入")
+    # pre_infected = replace_df_values(pre_infected, "はい", "いいえ", "未記入")
+
+    return infected.values[1:], pre_infected.values[1:]
+
 
 def get_members_list():
     members_sql = f"""
@@ -130,8 +186,9 @@ def get_members_list():
     members = DB.read(members_sql)
     return members.values[1:].flatten()
 
+
 # request.formから現在時刻、User_codeを追加したdictを返す
-def form_to_data(form,is_updated=True):
+def form_to_data(form, is_updated=True):
     form_dict = form.to_dict()
     # 現在時刻を取得
     now = datetime.now()
@@ -219,11 +276,11 @@ def fetch_data(User_code):
      vaccine_data
      ) = create_main_data(User_code)
 
-    if not session["user_data"]:
+    if not ("user_data" in session):
         session["user_data"] = user_data
         session["target_data"] = user_data
     else:
-        session["target_data"]=user_data
+        session["target_data"] = user_data
 
     session["health_data"] = health_data.values
     session["activity_data"] = activity_data.values
@@ -231,14 +288,16 @@ def fetch_data(User_code):
     session["vaccine_data"] = vaccine_data.values
 
     is_admin = num_conv_tf(session["user_data"]["Admin_rights"][0])
-    if  is_admin:
+    if is_admin:
         return redirect(f"/fetch:{User_code}/admin")
     else:
         return redirect(f"/mypage:{User_code}")
 
+
 @app.route("/fetch:<User_code>/admin")
 def fetch_data_admin(User_code):
-
+    session["infected"], session["pre_infected"] = create_admin_data()
+    return redirect(f"/mypage:{User_code}")
 
 
 # @app.route("/filter:<User_code>",methods=["POST"])
@@ -255,7 +314,6 @@ def mypage(User_code):
                         "/signup" in referer or
                         f"/mypage:{User_code}" in referer
         ):
-
             is_completed_health = (not type(session["health_data"][0][-1]) == str
                                    and session["health_data"][0][-1].date() == datetime.now().date())
             is_completed_activity = (not type(session["activity_data"][0][-1]) == str
@@ -272,7 +330,9 @@ def mypage(User_code):
                                        vaccine_data=session["vaccine_data"],
                                        is_completed_health=is_completed_health,
                                        is_completed_activity=is_completed_activity,
-                                       members_list=get_members_list()
+                                       members_list=get_members_list(),
+                                       infected=session["infected"],
+                                       pre_infected=session["pre_infected"]
                                        )
             else:
                 return render_template("/mypages/mypage.html",
@@ -315,7 +375,7 @@ def logout(User_code):
                                is_completed_health=is_completed_health,
                                is_completed_activity=is_completed_activity,
                                members=get_members_list(),
-                               logout=comp_logout(True,User_code)
+                               logout=comp_logout(True, User_code)
                                )
     else:
         return render_template("/mypages/mypage.html",
@@ -329,8 +389,9 @@ def logout(User_code):
                                is_completed_health=is_completed_health,
                                is_completed_activity=is_completed_activity,
                                members=get_members_list(),
-                               logout=comp_logout(True,User_code)
+                               logout=comp_logout(True, User_code)
                                )
+
 
 # 健康記録画面
 @app.route("/mypage:<User_code>/edit/health", methods=["GET", "POST"])
@@ -360,7 +421,7 @@ def edit_infection(User_code):
     if not request.form:
         return render_template("mypages/subpages/infection.html", result=comp_result(False, User_code))
     else:
-        data = form_to_data(request.form,False)
+        data = form_to_data(request.form, False)
         DB.write("infection", data)
     return render_template("mypages/subpages/infection.html", result=comp_result(True, User_code))
 
@@ -371,7 +432,7 @@ def edit_vaccine(User_code):
     if not request.form:
         return render_template("mypages/subpages/vaccine.html", result=comp_result(False, User_code))
     else:
-        data = form_to_data(request.form,False)
+        data = form_to_data(request.form, False)
         DB.write("vaccine", data)
     return render_template("mypages/subpages/vaccine.html", result=comp_result(True, User_code))
 
