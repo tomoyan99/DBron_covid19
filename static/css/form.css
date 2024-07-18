@@ -112,11 +112,11 @@ body {
 }
 
 .container::-webkit-scrollbar-thumb {
-    background: #00608d;
+    background: #2ABCA7;
 }
 
 .container::-webkit-scrollbar-track {
-    background: #bbdbf3;
+    background: #a2a2a2;
 }
 
 @media (max-width: 700px) {
