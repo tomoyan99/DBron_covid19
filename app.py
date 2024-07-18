@@ -115,6 +115,12 @@ def create_main_data(User_code):
     else:
         raise Exception("データベースにユーザーが見つからない")
 
+def get_members_list():
+    members_sql = f"""
+                    select User_code from users
+    """
+    members = DB.read(members_sql)
+    return members.values[1:].flatten()
 
 # request.formから現在時刻、User_codeを追加したdictを返す
 def form_to_data(form,is_updated=True):
@@ -141,7 +147,7 @@ def home():
         pass
     else:
         return goto_error("データベースエラー", "データベースに接続できませんでした")
-
+    print(get_members_list())
     return redirect('/test')
     # return redirect('/login')
 
@@ -204,7 +210,13 @@ def fetch_data(User_code):
      infection_data,
      vaccine_data
      ) = create_main_data(User_code)
-    session["user_data"] = user_data
+
+    if not session["user_data"]:
+        session["user_data"] = user_data
+        session["target_data"] = user_data
+    else:
+        session["target_data"]=user_data
+
     session["health_data"] = health_data.values
     session["activity_data"] = activity_data.values
     session["infection_data"] = infection_data.values
@@ -238,7 +250,8 @@ def mypage(User_code):
                                        infection_data=session["infection_data"],
                                        vaccine_data=session["vaccine_data"],
                                        is_completed_health=is_completed_health,
-                                       is_completed_activity=is_completed_activity
+                                       is_completed_activity=is_completed_activity,
+                                       members_list=get_members_list()
                                        )
             else:
                 return render_template("/mypages/mypage.html",
@@ -250,7 +263,8 @@ def mypage(User_code):
                                        infection_data=session["infection_data"],
                                        vaccine_data=session["vaccine_data"],
                                        is_completed_health=is_completed_health,
-                                       is_completed_activity=is_completed_activity
+                                       is_completed_activity=is_completed_activity,
+                                       members_list=User_code
                                        )
         else:
             abort(403)  # Forbidden
@@ -279,6 +293,7 @@ def logout(User_code):
                                vaccine_data=session["vaccine_data"],
                                is_completed_health=is_completed_health,
                                is_completed_activity=is_completed_activity,
+                               members=get_members_list(),
                                logout=comp_logout(True,User_code)
                                )
     else:
@@ -292,6 +307,7 @@ def logout(User_code):
                                vaccine_data=session["vaccine_data"],
                                is_completed_health=is_completed_health,
                                is_completed_activity=is_completed_activity,
+                               members=get_members_list(),
                                logout=comp_logout(True,User_code)
                                )
 
